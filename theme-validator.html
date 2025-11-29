@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题配置验证测试</title>
+    <style>
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .content {
+            padding: 30px;
+        }
+        .test-section { 
+            margin: 30px 0; 
+            padding: 25px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+        .test-section:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.1);
+        }
+        .status { 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px;
+        }
+        .success { 
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white; 
+        }
+        .error { 
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white; 
+        }
+        .warning { 
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white; 
+        }
+        .info { 
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white; 
+        }
+        button { 
+            padding: 12px 24px; 
+            margin: 8px; 
+            border: none; 
+            border-radius: 25px;
+            cursor: pointer; 
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        .primary { 
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white; 
+        }
+        .secondary { 
+            background: linear-gradient(135deg, #757575, #616161);
+            color: white; 
+        }
+        .success-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        .theme-preview {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .theme-card {
+            padding: 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #4CAF50;
+        }
+        .config-display {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .class-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .class-tag {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .column-demo {
+            display: grid;
+            gap: 10px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .column-single { grid-template-columns: 1fr; }
+        .column-double { grid-template-columns: repeat(2, 1fr); }
+        .column-triple { grid-template-columns: repeat(3, 1fr); }
+        .column-quad { grid-template-columns: repeat(4, 1fr); }
+        .demo-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Vue Admin Better 主题配置验证测试</h1>
+            <p>专业的主题配置系统测试平台</p>
+        </div>
+        
+        <div class="content">
+            <div class="test-section">
+                <h3>📊 当前主题状态检测</h3>
+                <div id="theme-status"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🎯 主题配置测试</h3>
+                <div class="theme-preview">
+                    <div class="theme-card">
+                        <h4>🌈 主题设置</h4>
+                        <button class="primary" onclick="setBlueWhiteTheme()">设置为蓝白主题</button>
+                        <button class="success-btn" onclick="enableColumnMode()">启用分栏模式</button>
+                        <button class="secondary" onclick="disableColumnMode()">禁用分栏模式</button>
+                        <button class="secondary" onclick="clearTheme()">清除主题配置</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h3>📐 分栏数量测试</h3>
+                <div class="theme-preview">
+                    <div class="theme-card">
+                        <h4>🔢 列数设置</h4>
+                        <button class="primary" onclick="setColumnCount(1)">单列</button>
+                        <button class="primary" onclick="setColumnCount(2)">双列</button>
+                        <button class="primary" onclick="setColumnCount(3)">三列</button>
+                        <button class="primary" onclick="setColumnCount(4)">四列</button>
+                    </div>
+                    <div class="theme-card">
+                        <h4>👀 分栏效果预览</h4>
+                        <div id="column-preview" class="column-demo column-double">
+                            <div class="demo-item">项目 1</div>
+                            <div class="demo-item">项目 2</div>
+                            <div class="demo-item">项目 3</div>
+                            <div class="demo-item">项目 4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🏷️ Body类名检查</h3>
+                <div id="body-classes"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🔧 高级测试功能</h3>
+                <div class="theme-preview">
+                    <div class="theme-card">
+                        <h4>⚡ 快速测试</h4>
+                        <button class="success-btn" onclick="runFullTest()">运行完整测试</button>
+                        <button class="info" onclick="validateThemeIntegration()">验证主题集成</button>
+                        <button class="warning" onclick="simulateThemeError()">模拟错误情况</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h3>📋 测试结果日志</h3>
+                <div id="test-log" class="config-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testLog = [];
+
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            testLog.push({ message: logEntry, type });
+            updateLogDisplay();
+        }
+
+        function updateLogDisplay() {
+            const logDiv = document.getElementById('test-log');
+            logDiv.innerHTML = testLog.map(entry => {
+                const color = entry.type === 'error' ? '#f44336' : 
+                             entry.type === 'success' ? '#4CAF50' : 
+                             entry.type === 'warning' ? '#ff9800' : '#2196F3';
+                return `<div style="color: ${color}; margin: 2px 0;">${entry.message}</div>`;
+            }).join('');
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus() {
+            addLog('开始检测主题配置状态...');
+            
+            const themeData = localStorage.getItem('vue-admin-better-theme');
+            const statusDiv = document.getElementById('theme-status');
+            const bodyClassesDiv = document.getElementById('body-classes');
+            
+            if (themeData) {
+                try {
+                    const theme = JSON.parse(themeData);
+                    
+                    let statusHtml = `
+                        <div class="theme-card">
+                            <h4>✅ 主题配置已加载</h4>
+                            <p><strong>主题名称:</strong> <span class="status info">${theme.name || '未设置'}</span></p>
+                            <p><strong>布局:</strong> <span class="status info">${theme.layout || '未设置'}</span></p>
+                            <p><strong>头部:</strong> <span class="status info">${theme.header || '未设置'}</span></p>
+                            <p><strong>标签页:</strong> <span class="status info">${theme.tabsBar || '未设置'}</span></p>
+                            <p><strong>分栏模式:</strong> <span class="status ${theme.columnMode === 'true' ? 'success' : 'warning'}">${theme.columnMode || '未设置'}</span></p>
+                            <p><strong>分栏数量:</strong> <span class="status info">${theme.columnCount || '未设置'}</span></p>
+                        </div>
+                    `;
+                    
+                    statusDiv.innerHTML = statusHtml;
+                    addLog(`主题配置检测成功: ${theme.name} 主题，分栏模式: ${theme.columnMode}`);
+                    
+                    // 更新列预览
+                    updateColumnPreview(theme.columnCount || '2');
+                    
+                } catch (error) {
+                    statusDiv.innerHTML = `<div class="status error">❌ 主题配置解析失败: ${error.message}</div>`;
+                    addLog(`主题配置解析失败: ${error.message}`, 'error');
+                }
+            } else {
+                statusDiv.innerHTML = `<div class="status warning">⚠️ 未找到主题配置，使用默认主题</div>`;
+                addLog('未找到主题配置，使用默认主题', 'warning');
+                updateColumnPreview('2');
+            }
+            
+            // 显示body类名
+            const bodyClasses = document.body.className.split(' ').filter(cls => cls.trim());
+            if (bodyClasses.length > 0) {
+                bodyClassesDiv.innerHTML = `
+                    <h4>📝 当前Body类名:</h4>
+                    <div class="class-tags">
+                        ${bodyClasses.map(cls => `<span class="class-tag">${cls}</span>`).join('')}
+                    </div>
+                `;
+                addLog(`检测到 ${bodyClasses.length} 个body类名: ${bodyClasses.join(', ')}`);
+            } else {
+                bodyClassesDiv.innerHTML = '<div class="status warning">未找到body类名</div>';
+                addLog('未找到body类名', 'warning');
+            }
+        }
+
+        function updateColumnPreview(columnCount) {
+            const preview = document.getElementById('column-preview');
+            const classMap = {
+                '1': 'column-single',
+                '2': 'column-double',
+                '3': 'column-triple',
+                '4': 'column-quad'
+            };
+            
+            preview.className = `column-demo ${classMap[columnCount] || 'column-double'}`;
+            addLog(`列预览已更新为: ${columnCount} 列`);
+        }
+
+        function setBlueWhiteTheme() {
+            addLog('正在设置蓝白主题...');
+            const theme = {
+                "name": "blue-white",
+                "layout": "vertical",
+                "header": "fixed",
+                "tabsBar": "true",
+                "columnMode": "false",
+                "columnCount": "2"
+            };
+            
+            localStorage.setItem('vue-admin-better-theme', JSON.stringify(theme));
+            updateStatus();
+            addLog('蓝白主题已设置完成', 'success');
+            
+            // 模拟主题切换效果
+            document.body.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        }
+
+        function enableColumnMode() {
+            addLog('正在启用分栏模式...');
+            const currentTheme = localStorage.getItem('vue-admin-better-theme');
+            let theme = currentTheme ? JSON.parse(currentTheme) : {};
+            theme.name = "blue-white";
+            theme.columnMode = "true";
+            theme.columnCount = theme.columnCount || "2";
+            localStorage.setItem('vue-admin-better-theme', JSON.stringify(theme));
+            updateStatus();
+            addLog('分栏模式已启用', 'success');
+        }
+
+        function disableColumnMode() {
+            addLog('正在禁用分栏模式...');
+            const currentTheme = localStorage.getItem('vue-admin-better-theme');
+            if (currentTheme) {
+                let theme = JSON.parse(currentTheme);
+                theme.columnMode = "false";
+                localStorage.setItem('vue-admin-better-theme', JSON.stringify(theme));
+                updateStatus();
+                addLog('分栏模式已禁用', 'success');
+            } else {
+                addLog('未找到主题配置', 'warning');
+            }
+        }
+
+        function setColumnCount(count) {
+            addLog(`正在设置分栏数量为 ${count} 列...`);
+            const currentTheme = localStorage.getItem('vue-admin-better-theme');
+            let theme = currentTheme ? JSON.parse(currentTheme) : {};
+            theme.name = "blue-white";
+            theme.columnMode = "true";
+            theme.columnCount = count.toString();
+            localStorage.setItem('vue-admin-better-theme', JSON.stringify(theme));
+            updateStatus();
+            addLog(`分栏数量已设置为 ${count} 列`, 'success');
+        }
+
+        function clearTheme() {
+            addLog('正在清除主题配置...');
+            localStorage.removeItem('vue-admin-better-theme');
+            document.body.className = '';
+            updateStatus();
+            addLog('主题配置已清除', 'success');
+        }
+
+        function runFullTest() {
+            addLog('开始运行完整主题测试...', 'info');
+            
+            // 测试1: 设置蓝白主题
+            setBlueWhiteTheme();
+            
+            setTimeout(() => {
+                // 测试2: 启用分栏模式
+                enableColumnMode();
+                
+                setTimeout(() => {
+                    // 测试3: 切换不同列数
+                    const columnCounts = ['1', '2', '3', '4'];
+                    let index = 0;
+                    
+                    const interval = setInterval(() => {
+                        if (index < columnCounts.length) {
+                            setColumnCount(columnCounts[index]);
+                            index++;
+                        } else {
+                            clearInterval(interval);
+                            addLog('完整测试已完成', 'success');
+                        }
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }
+
+        function validateThemeIntegration() {
+            addLog('开始验证主题集成状态...', 'info');
+            
+            const checks = [
+                {
+                    name: 'localStorage支持',
+                    test: () => typeof localStorage !== 'undefined',
+                    message: '浏览器支持localStorage'
+                },
+                {
+                    name: 'JSON解析',
+                    test: () => {
+                        try {
+                            JSON.parse('{"test": true}');
+                            return true;
+                        } catch {
+                            return false;
+                        }
+                    },
+                    message: 'JSON解析功能正常'
+                },
+                {
+                    name: 'DOM操作',
+                    test: () => document.body !== null,
+                    message: 'DOM操作可用'
+                },
+                {
+                    name: '主题配置存储',
+                    test: () => {
+                        const testData = '{"test": true}';
+                        localStorage.setItem('test-theme', testData);
+                        const retrieved = localStorage.getItem('test-theme');
+                        localStorage.removeItem('test-theme');
+                        return retrieved === testData;
+                    },
+                    message: '主题配置存储功能正常'
+                }
+            ];
+            
+            checks.forEach(check => {
+                if (check.test()) {
+                    addLog(`✅ ${check.name}: ${check.message}`, 'success');
+                } else {
+                    addLog(`❌ ${check.name}: 测试失败`, 'error');
+                }
+            });
+        }
+
+        function simulateThemeError() {
+            addLog('正在模拟主题错误情况...', 'warning');
+            
+            // 模拟1: 损坏的JSON数据
+            localStorage.setItem('vue-admin-better-theme', '损坏的JSON数据');
+            updateStatus();
+            addLog('已模拟损坏的JSON数据', 'warning');
+            
+            setTimeout(() => {
+                // 模拟2: 缺少必要字段
+                const incompleteTheme = {
+                    "name": "blue-white"
+                    // 缺少其他必要字段
+                };
+                localStorage.setItem('vue-admin-better-theme', JSON.stringify(incompleteTheme));
+                updateStatus();
+                addLog('已模拟不完整的主题配置', 'warning');
+                
+                setTimeout(() => {
+                    // 恢复正常
+                    setBlueWhiteTheme();
+                    addLog('错误模拟已完成，已恢复正常状态', 'success');
+                }, 2000);
+            }, 2000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('主题配置测试平台已加载', 'success');
+            updateStatus();
+            
+            // 每秒更新一次状态
+            setInterval(updateStatus, 5000);
+        });
+
+        // 添加键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        setColumnCount(1);
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        setColumnCount(2);
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        setColumnCount(3);
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        setColumnCount(4);
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        updateStatus();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝白主题切换测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .test-button {
+            background: #165DFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #0E42D2;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .status.success {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+        }
+        .status.error {
+            background: #ffeaea;
+            border: 1px solid #f44336;
+            color: #c62828;
+        }
+        .status.info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+        }
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .theme-preview {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .preview-panel {
+            flex: 1;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+        }
+        .preview-panel h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        .menu-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .default-theme .menu-item {
+            background: #191a23;
+            color: white;
+        }
+        .blue-white-theme .menu-item {
+            background: #f0f7ff;
+            color: #165DFF;
+            border: 1px solid #e6f0ff;
+        }
+        .blue-white-theme .menu-item.active {
+            background: #165DFF;
+            color: white;
+        }
+        .column-mode {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .column {
+            flex: 1;
+            min-width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>蓝白主题切换测试工具</h1>
+        <p>此工具用于测试蓝白主题切换是否生效，特别关注菜单的响应情况。</p>
+
+        <div class="test-section">
+            <div class="test-title">1. 主题状态检测</div>
+            <button class="test-button" onclick="checkThemeStatus()">检测当前主题状态</button>
+            <div id="theme-status" class="status info">点击按钮检测主题状态</div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">2. 主题切换测试</div>
+            <button class="test-button" onclick="switchToDefaultTheme()">切换到默认主题</button>
+            <button class="test-button" onclick="switchToBlueWhiteTheme()">切换到蓝白主题</button>
+            <button class="test-button" onclick="switchToBlueWhiteColumnTheme()">切换到蓝白分栏主题</button>
+            <div id="switch-status" class="status info">准备切换主题</div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">3. 菜单强制刷新测试</div>
+            <button class="test-button" onclick="forceMenuRerender()">强制菜单重新渲染</button>
+            <button class="test-button" onclick="checkMenuClasses()">检查菜单类名</button>
+            <div id="menu-status" class="status info">点击按钮测试菜单</div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">4. 主题预览</div>
+            <div class="theme-preview">
+                <div class="preview-panel default-theme">
+                    <h4>默认主题</h4>
+                    <div class="menu-item">菜单项 1</div>
+                    <div class="menu-item">菜单项 2</div>
+                    <div class="menu-item">菜单项 3</div>
+                </div>
+                <div class="preview-panel blue-white-theme">
+                    <h4>蓝白主题</h4>
+                    <div class="menu-item">菜单项 1</div>
+                    <div class="menu-item active">菜单项 2 (激活)</div>
+                    <div class="menu-item">菜单项 3</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">5. 分栏模式预览</div>
+            <div class="column-mode">
+                <div class="column">
+                    <h5>单列模式</h5>
+                    <div class="menu-item">子菜单 1</div>
+                    <div class="menu-item">子菜单 2</div>
+                </div>
+                <div class="column">
+                    <h5>双列模式</h5>
+                    <div class="menu-item">子菜单 3</div>
+                    <div class="menu-item">子菜单 4</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">6. 实时日志</div>
+            <div id="log-output" class="log-output">等待操作...</div>
+        </div>
+    </div>
+
+    <script>
+        let logOutput = document.getElementById('log-output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            logOutput.textContent += logEntry;
+            logOutput.scrollTop = logOutput.scrollHeight;
+            
+            // 同时输出到控制台
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        function checkThemeStatus() {
+            log('开始检测主题状态...', 'info');
+            
+            try {
+                // 检查localStorage
+                const themeData = localStorage.getItem('vue-admin-better-theme');
+                log(`localStorage主题数据: ${themeData || '未找到'}`, themeData ? 'success' : 'error');
+                
+                if (themeData) {
+                    const theme = JSON.parse(themeData);
+                    log(`当前主题: ${theme.name || '未设置'}`, 'success');
+                    log(`主题配置: ${JSON.stringify(theme, null, 2)}`, 'info');
+                }
+                
+                // 检查body类名
+                const bodyClasses = document.body.className;
+                log(`body类名: ${bodyClasses}`, 'info');
+                
+                // 检查是否包含蓝白主题类
+                const hasBlueWhite = bodyClasses.includes('vue-admin-better-theme-blue-white');
+                log(`蓝白主题类: ${hasBlueWhite ? '已应用' : '未应用'}`, hasBlueWhite ? 'success' : 'error');
+                
+                // 检查分栏模式
+                const hasColumnMode = bodyClasses.includes('blue-white-column-mode');
+                log(`分栏模式: ${hasColumnMode ? '已启用' : '未启用'}`, hasColumnMode ? 'success' : 'error');
+                
+                // 检查菜单元素
+                const menuElements = document.querySelectorAll('.el-menu, .side-container, .vab-side-item');
+                log(`找到 ${menuElements.length} 个菜单相关元素`, menuElements.length > 0 ? 'success' : 'error');
+                
+                document.getElementById('theme-status').className = `status ${hasBlueWhite ? 'success' : 'error'}`;
+                document.getElementById('theme-status').textContent = `蓝白主题: ${hasBlueWhite ? '已生效' : '未生效'}, 分栏模式: ${hasColumnMode ? '已启用' : '未启用'}`;
+                
+            } catch (error) {
+                log(`检测失败: ${error.message}`, 'error');
+                document.getElementById('theme-status').className = 'status error';
+                document.getElementById('theme-status').textContent = `检测失败: ${error.message}`;
+            }
+        }
+
+        function switchToDefaultTheme() {
+            log('正在切换到默认主题...', 'info');
+            
+            try {
+                // 清除蓝白主题数据
+                const currentTheme = localStorage.getItem('vue-admin-better-theme');
+                if (currentTheme) {
+                    const theme = JSON.parse(currentTheme);
+                    theme.name = 'default';
+                    theme.columnMode = false;
+                    localStorage.setItem('vue-admin-better-theme', JSON.stringify(theme));
+                    log('已更新localStorage为默认主题', 'success');
+                }
+                
+                // 移除蓝白主题类名
+                document.body.classList.remove('vue-admin-better-theme-blue-white', 'blue-white-column-mode');
+                document.body.classList.remove('column-single', 'column-double', 'column-triple', 'column-quad');
+                log('已移除蓝白主题类名', 'success');
+                
+                // 触发事件
+                if (window.$baseEventBus) {
+                    window.$baseEventBus.$emit('theme-updated', { name: 'default' });
+                    log('已触发theme-updated事件', 'success');
+                }
+                
+                // 强制重新渲染
+                setTimeout(() => {
+                    if (window.$baseEventBus) {
+                        window.$baseEventBus.$emit('force-vue-rerender');
+                        log('已触发force-vue-rerender事件', 'success');
+                    }
+                }, 100);
+                
+                document.getElementById('switch-status').className = 'status success';
+                document.getElementById('switch-status').textContent = '已切换到默认主题';
+                
+                // 延迟检查后再次验证
+                setTimeout(checkThemeStatus, 500);
+                
+            } catch (error) {
+                log(`切换失败: ${error.message}`, 'error');
+                document.getElementById('switch-status').className = 'status error';
+                document.getElementById('switch-status').textContent = `切换失败: ${error.message}`;
+            }
+        }
+
+        function switchToBlueWhiteTheme() {
+            log('正在切换到蓝白主题...', 'info');
+            
+            try {
+                // 设置蓝白主题数据
+                const themeData = {
+                    name: 'blue-white',
+                    layout: 'vertical',
+                    header: 'fixed',
+                    tabsBar: true,
+                    themeName: 'blue-white',
+                    columnMode: false,
+                    columnNum: 1
+                };
+                
+                localStorage.setItem('vue-admin-better-theme', JSON.stringify(themeData));
+                log('已设置蓝白主题localStorage', 'success');
+                
+                // 添加蓝白主题类名
+                document.body.classList.add('vue-admin-better-theme-blue-white');
+                document.body.classList.remove('blue-white-column-mode');
+                document.body.classList.remove('column-single', 'column-double', 'column-triple', 'column-quad');
+                log('已应用蓝白主题类名', 'success');
+                
+                // 触发事件
+                if (window.$baseEventBus) {
+                    window.$baseEventBus.$emit('theme-updated', themeData);
+                    log('已触发theme-updated事件', 'success');
+                }
+                
+                // 强制重新渲染
+                setTimeout(() => {
+                    if (window.$baseEventBus) {
+                        window.$baseEventBus.$emit('force-vue-rerender');
+                        log('已触发force-vue-rerender事件', 'success');
+                    }
+                }, 100);
+                
+                document.getElementById('switch-status').className = 'status success';
+                document.getElementById('switch-status').textContent = '已切换到蓝白主题';
+                
+                // 延迟检查后再次验证
+                setTimeout(checkThemeStatus, 500);
+                
+            } catch (error) {
+                log(`切换失败: ${error.message}`, 'error');
+                document.getElementById('switch-status').className = 'status error';
+                document.getElementById('switch-status').textContent = `切换失败: ${error.message}`;
+            }
+        }
+
+        function switchToBlueWhiteColumnTheme() {
+            log('正在切换到蓝白分栏主题...', 'info');
+            
+            try {
+                // 设置蓝白分栏主题数据
+                const themeData = {
+                    name: 'blue-white',
+                    layout: 'vertical',
+                    header: 'fixed',
+                    tabsBar: true,
+                    themeName: 'blue-white',
+                    columnMode: true,
+                    columnNum: 2
+                };
+                
+                localStorage.setItem('vue-admin-better-theme', JSON.stringify(themeData));
+                log('已设置蓝白分栏主题localStorage', 'success');
+                
+                // 添加蓝白主题和分栏类名
+                document.body.classList.add('vue-admin-better-theme-blue-white', 'blue-white-column-mode', 'column-double');
+                log('已应用蓝白分栏主题类名', 'success');
+                
+                // 触发事件
+                if (window.$baseEventBus) {
+                    window.$baseEventBus.$emit('theme-updated', themeData);
+                    log('已触发theme-updated事件', 'success');
+                }
+                
+                // 强制重新渲染
+                setTimeout(() => {
+                    if (window.$baseEventBus) {
+                        window.$baseEventBus.$emit('force-vue-rerender');
+                        log('已触发force-vue-rerender事件', 'success');
+                    }
+                }, 100);
+                
+                document.getElementById('switch-status').className = 'status success';
+                document.getElementById('switch-status').textContent = '已切换到蓝白分栏主题';
+                
+                // 延迟检查后再次验证
+                setTimeout(checkThemeStatus, 500);
+                
+            } catch (error) {
+                log(`切换失败: ${error.message}`, 'error');
+                document.getElementById('switch-status').className = 'status error';
+                document.getElementById('switch-status').textContent = `切换失败: ${error.message}`;
+            }
+        }
+
+        function forceMenuRerender() {
+            log('正在强制菜单重新渲染...', 'info');
+            
+            try {
+                // 触发强制重新渲染事件
+                if (window.$baseEventBus) {
+                    window.$baseEventBus.$emit('force-vue-rerender');
+                    log('已发送force-vue-rerender事件', 'success');
+                }
+                
+                // 模拟localStorage变化事件
+                const event = new StorageEvent('storage', {
+                    key: 'vue-admin-better-theme',
+                    newValue: localStorage.getItem('vue-admin-better-theme'),
+                    oldValue: null,
+                    storageArea: localStorage
+                });
+                window.dispatchEvent(event);
+                log('已触发storage事件', 'success');
+                
+                document.getElementById('menu-status').className = 'status success';
+                document.getElementById('menu-status').textContent = '已强制菜单重新渲染';
+                
+            } catch (error) {
+                log(`强制渲染失败: ${error.message}`, 'error');
+                document.getElementById('menu-status').className = 'status error';
+                document.getElementById('menu-status').textContent = `强制渲染失败: ${error.message}`;
+            }
+        }
+
+        function checkMenuClasses() {
+            log('正在检查菜单类名...', 'info');
+            
+            try {
+                // 检查各种菜单元素
+                const selectors = [
+                    '.el-menu',
+                    '.side-container',
+                    '.vab-side-item',
+                    '.el-submenu',
+                    '.el-menu-item',
+                    '[class*="menu"]',
+                    '[class*="side"]'
+                ];
+                
+                selectors.forEach(selector => {
+                    const elements = document.querySelectorAll(selector);
+                    if (elements.length > 0) {
+                        log(`找到 ${elements.length} 个 ${selector} 元素`, 'success');
+                        elements.forEach((el, index) => {
+                            if (el.className) {
+                                log(`  ${selector}[${index}]: ${el.className}`, 'info');
+                            }
+                        });
+                    }
+                });
+                
+                document.getElementById('menu-status').className = 'status success';
+                document.getElementById('menu-status').textContent = '菜单类名检查完成，请查看日志';
+                
+            } catch (error) {
+                log(`检查失败: ${error.message}`, 'error');
+                document.getElementById('menu-status').className = 'status error';
+                document.getElementById('menu-status').textContent = `检查失败: ${error.message}`;
+            }
+        }
+
+        // 页面加载完成后自动检测
+        window.addEventListener('load', () => {
+            log('页面加载完成，开始自动检测...', 'info');
+            setTimeout(checkThemeStatus, 1000);
+        });
+
+        // 监听storage变化
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'vue-admin-better-theme') {
+                log(`检测到主题配置变化: ${e.newValue}`, 'info');
+                setTimeout(checkThemeStatus, 500);
+            }
+        });
+
+        // 初始化
+        log('蓝白主题切换测试工具已加载', 'success');
+        log('请使用上方的按钮测试主题切换功能', 'info');
+    </script>
+</body>
+</html>

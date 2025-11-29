@@ -9,9 +9,11 @@
 <script>
   import { isExternal } from '@/utils/validate'
   import path from 'path'
+  import VabColumnSubmenu from './VabColumnSubmenu'
 
   export default {
     name: 'VabSideItem',
+    components: { VabColumnSubmenu },
     props: {
       item: {
         type: Object,
@@ -35,11 +37,62 @@
         ) {
           return 'VabMenuItem'
         } else {
+          // 检查是否启用分栏模式 - 响应式计算属性
+          const theme = localStorage.getItem('vue-admin-better-theme')
+          if (theme) {
+            try {
+              const themeConfig = JSON.parse(theme)
+              if (themeConfig.name === 'blue-white' && themeConfig.columnMode === 'true') {
+                return 'VabColumnSubmenu'
+              }
+            } catch (error) {
+              console.warn('主题配置解析失败:', error)
+            }
+          }
           return 'VabSubmenu'
         }
       },
+      // 添加主题配置计算属性
+      themeConfig() {
+        const theme = localStorage.getItem('vue-admin-better-theme')
+        if (theme) {
+          try {
+            return JSON.parse(theme)
+          } catch (error) {
+            console.warn('主题配置解析失败:', error)
+            return {}
+          }
+        }
+        return {}
+      }
+    },
+    watch: {
+      // 监听主题变化事件
+      '$baseEventBus': {
+        handler() {
+          // 监听主题更新事件
+          this.$baseEventBus.$on('theme-updated', this.handleThemeUpdate)
+        },
+        immediate: true
+      },
+      // 监听主题配置变化
+      themeConfig: {
+        handler(newVal, oldVal) {
+          if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+            this.$forceUpdate()
+            console.log('主题配置变化，强制重新渲染菜单组件')
+          }
+        },
+        deep: true,
+        immediate: true
+      }
     },
     methods: {
+      handleThemeUpdate(themeData) {
+        // 主题更新时强制重新计算menuComponent
+        this.$forceUpdate()
+        console.log('主题已更新，重新渲染菜单组件:', themeData)
+      },
       handleChildren(children = [], parent) {
         if (children === null) children = []
         const showChildren = children.filter((item) => {

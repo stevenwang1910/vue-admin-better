@@ -5,6 +5,8 @@ import router from './router'
 import './plugins'
 import '@/layouts/export'
 import { printLayoutsInfo } from '@/utils/printInfo'
+import { initTheme } from '@/utils/theme'
+import '@/utils/theme-test'
 
 /**
  * @author https://github.com/zxwk1998/vue-admin-better （不想保留author可删除）
@@ -18,9 +20,12 @@ if (useMock) {
   import('@/utils/static').then(({ mockXHR }) => {
     mockXHR()
     console.log('已启用Mock拦截，所有接口请求将被Mock拦截')
-    // 打印layouts/index.js中的信息到控制台
     printLayoutsInfo()
     Vue.config.productionTip = false
+    
+    // 初始化主题
+    initTheme()
+    
     new Vue({
       el: '#vue-admin-better',
       router,
@@ -32,6 +37,10 @@ if (useMock) {
   // 未启用Mock时直接打印layouts/index.js中的信息到控制台
   printLayoutsInfo()
   Vue.config.productionTip = false
+  
+  // 初始化主题
+  initTheme()
+  
   new Vue({
     el: '#vue-admin-better',
     router,
