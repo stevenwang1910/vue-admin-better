@@ -122,6 +122,15 @@ export const asyncRoutes = [
           permissions: ['admin'],
         },
       },
+      {
+        path: 'dataTable',
+        component: () => import('@/views/dataTable/index'),
+        name: 'DataTable',
+        meta: {
+          title: '数据表格',
+          permissions: ['admin'],
+        },
+      },
 
       {
         path: 'webSocket',
