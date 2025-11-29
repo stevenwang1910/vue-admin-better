@@ -27,12 +27,15 @@ function handleMockArray() {
       files.forEach((item) => {
         const fPath = join(path, item)
         const stat = fs.statSync(fPath)
-        if (stat.isDirectory() === true) findJsonFile(item)
-        if (stat.isFile() === true) jsonFiles.push(item)
+        if (stat.isDirectory() === true) findJsonFile(fPath)
+        if (stat.isFile() === true) jsonFiles.push(fPath)
       })
     }
     findJsonFile(jsonPath)
-    jsonFiles.forEach((item) => mockArray.push(`./controller/${item}`))
+    jsonFiles.forEach((item) => {
+      const relativePath = item.replace(/\\/g, '/').replace('mock/', './')
+      mockArray.push(relativePath)
+    })
   }
   getFiles('mock/controller')
   return mockArray

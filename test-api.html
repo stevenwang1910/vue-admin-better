@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据表格API测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .test-button {
+            background-color: #409eff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background-color: #66b1ff;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f0f9ff;
+            border: 1px solid #b3d8ff;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #fef0f0;
+            border-color: #fbc4c4;
+            color: #f56c6c;
+        }
+        .success {
+            background-color: #f0f9ff;
+            border-color: #b3d8ff;
+            color: #409eff;
+        }
+        .loading {
+            color: #e6a23c;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>数据表格API测试页面</h1>
+        
+        <div class="test-section">
+            <h3>获取数据列表</h3>
+            <button class="test-button" onclick="testGetList()">测试获取列表</button>
+            <button class="test-button" onclick="testGetListWithParams()">测试带参数获取</button>
+            <div id="listResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>获取单条数据详情</h3>
+            <input type="number" id="detailId" placeholder="输入ID" value="1" style="padding:8px; margin-right:10px; border:1px solid #ddd; border-radius:4px;">
+            <button class="test-button" onclick="testGetDetail()">获取详情</button>
+            <div id="detailResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>编辑数据</h3>
+            <input type="number" id="editId" placeholder="输入要编辑的ID" value="1" style="padding:8px; margin-right:10px; border:1px solid #ddd; border-radius:4px;">
+            <button class="test-button" onclick="testEdit()">测试编辑</button>
+            <div id="editResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>删除数据</h3>
+            <input type="number" id="deleteId" placeholder="输入要删除的ID" value="1" style="padding:8px; margin-right:10px; border:1px solid #ddd; border-radius:4px;">
+            <button class="test-button" onclick="testDelete()">测试删除</button>
+            <div id="deleteResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 基础配置
+        const BASE_URL = 'http://localhost:8090';
+        const API_PREFIX = '/dataTable';
+
+        // 显示结果
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = isError ? 'result error' : 'result success';
+            element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        }
+
+        // 显示加载状态
+        function showLoading(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result loading';
+            element.textContent = message;
+        }
+
+        // 测试获取列表
+        async function testGetList() {
+            showLoading('listResult', '正在获取数据列表...');
+            try {
+                const response = await fetch(`${BASE_URL}${API_PREFIX}/getList`);
+                const data = await response.json();
+                showResult('listResult', data);
+            } catch (error) {
+                showResult('listResult', `错误: ${error.message}`, true);
+            }
+        }
+
+        // 测试带参数获取列表
+        async function testGetListWithParams() {
+            showLoading('listResult', '正在获取带参数的数据列表...');
+            try {
+                const params = new URLSearchParams({
+                    title: '测试',
+                    page: 1,
+                    limit: 10
+                });
+                const response = await fetch(`${BASE_URL}${API_PREFIX}/getList?${params}`);
+                const data = await response.json();
+                showResult('listResult', data);
+            } catch (error) {
+                showResult('listResult', `错误: ${error.message}`, true);
+            }
+        }
+
+        // 测试获取详情
+        async function testGetDetail() {
+            const id = document.getElementById('detailId').value;
+            showLoading('detailResult', `正在获取ID为 ${id} 的详情...`);
+            try {
+                const response = await fetch(`${BASE_URL}${API_PREFIX}/getDetail/${id}`);
+                const data = await response.json();
+                showResult('detailResult', data);
+            } catch (error) {
+                showResult('detailResult', `错误: ${error.message}`, true);
+            }
+        }
+
+        // 测试编辑
+        async function testEdit() {
+            const id = document.getElementById('editId').value;
+            showLoading('editResult', `正在编辑ID为 ${id} 的数据...`);
+            try {
+                const response = await fetch(`${BASE_URL}${API_PREFIX}/doEdit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(id),
+                        title: '编辑后的标题',
+                        author: '编辑者',
+                        status: '已发布'
+                    })
+                });
+                const data = await response.json();
+                showResult('editResult', data);
+            } catch (error) {
+                showResult('editResult', `错误: ${error.message}`, true);
+            }
+        }
+
+        // 测试删除
+        async function testDelete() {
+            const id = document.getElementById('deleteId').value;
+            showLoading('deleteResult', `正在删除ID为 ${id} 的数据...`);
+            try {
+                const response = await fetch(`${BASE_URL}${API_PREFIX}/doDelete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(id)
+                    })
+                });
+                const data = await response.json();
+                showResult('deleteResult', data);
+            } catch (error) {
+                showResult('deleteResult', `错误: ${error.message}`, true);
+            }
+        }
+
+        // 页面加载时自动测试获取列表
+        window.addEventListener('load', function() {
+            console.log('页面加载完成，可以开始测试API');
+            console.log('API基础地址:', BASE_URL + API_PREFIX);
+        });
+    </script>
+</body>
+</html>
