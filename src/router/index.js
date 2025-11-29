@@ -136,6 +136,25 @@ export const asyncRoutes = [
         meta: { title: '表单', permissions: ['admin'] },
       },
       {
+        path: 'activityForm',
+        name: 'ActivityForm',
+        component: () => import('@/views/vab/activityForm/index'),
+        meta: { title: '活动表单', permissions: ['admin'] },
+      },
+      {
+        path: 'activityForm/:id',
+        name: 'ActivityFormEdit',
+        component: () => import('@/views/vab/activityForm/index'),
+        meta: { title: '编辑活动', permissions: ['admin'] },
+        hidden: true,
+      },
+      {
+        path: 'activityList',
+        name: 'ActivityList',
+        component: () => import('@/views/vab/activityList/index'),
+        meta: { title: '活动列表', permissions: ['admin'] },
+      },
+      {
         path: 'element',
         name: 'Element',
         component: () => import('@/views/vab/element/index'),
