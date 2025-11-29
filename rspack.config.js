@@ -147,6 +147,7 @@ module.exports = {
       'process.env.VUE_APP_MOCK_ENABLE': JSON.stringify(process.env.VUE_APP_MOCK_ENABLE),
       'process.env.VUE_APP_AUTHOR': JSON.stringify(process.env.VUE_APP_AUTHOR),
       'process.env.VUE_APP_UPDATE_TIME': JSON.stringify(process.env.VUE_APP_UPDATE_TIME),
+      'process.env.DEV_PORT': JSON.stringify(process.env.DEV_PORT || '8090'),
     }),
     new HtmlRspackPlugin({
       template: './public/index.html',

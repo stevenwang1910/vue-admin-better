@@ -16,8 +16,8 @@ const setting = {
   title: 'Admin Better',
   //简写
   abbreviation: 'vab',
-  //开发环境端口号
-  devPort: '8090',
+  //开发环境端口号，优先从环境变量获取，默认8090
+  devPort: process.env.DEV_PORT || '8090',
   //copyright
   copyright: 'zxwk1998',
   //是否显示页面底部自定义版权信息
