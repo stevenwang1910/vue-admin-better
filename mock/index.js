@@ -65,10 +65,11 @@ const responseFake = (url, type, respond) => {
  * @param app
  */
 module.exports = (app) => {
-  app.use(bodyParser.json())
+  app.use(bodyParser.json({ limit: '50mb' }))
   app.use(
     bodyParser.urlencoded({
       extended: true,
+      limit: '50mb'
     })
   )
 
