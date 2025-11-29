@@ -67,6 +67,21 @@
                   </div>
                   <span class="theme-name">荣耀典藏</span>
                 </div>
+                <div
+                  class="theme-option"
+                  :class="{ active: theme.name === 'blue-white' }"
+                  @click="
+                    theme.name = 'blue-white'
+                    handleSaveTheme()
+                  "
+                >
+                  <div class="theme-preview blue-white-theme">
+                    <div class="preview-header"></div>
+                    <div class="preview-sidebar"></div>
+                    <div class="preview-content"></div>
+                  </div>
+                  <span class="theme-name">蓝白模式</span>
+                </div>
               </div>
             </div>
 
@@ -131,6 +146,25 @@
                   </div>
                   <el-switch v-model="theme.tabsBar" active-value="true" inactive-value="false" @change="handleSaveTheme" />
                 </div>
+                <div class="feature-item" v-if="theme.name === 'blue-white'">
+                  <div class="feature-info">
+                    <span class="feature-name">分栏模式</span>
+                    <span class="feature-desc">子菜单分栏展示</span>
+                  </div>
+                  <el-switch v-model="theme.columnMode" active-value="true" inactive-value="false" @change="handleSaveTheme" />
+                </div>
+                <div class="feature-item" v-if="theme.name === 'blue-white' && theme.columnMode === 'true'">
+                  <div class="feature-info">
+                    <span class="feature-name">分栏数量</span>
+                    <span class="feature-desc">设置分栏展示列数</span>
+                  </div>
+                  <el-select v-model="theme.columnCount" size="mini" style="width: 80px" @change="handleSaveTheme">
+                    <el-option label="单列" value="1"></el-option>
+                    <el-option label="双列" value="2"></el-option>
+                    <el-option label="三列" value="3"></el-option>
+                    <el-option label="四列" value="4"></el-option>
+                  </el-select>
+                </div>
               </div>
             </div>
           </div>
@@ -159,6 +193,8 @@
           layout: '',
           header: 'fixed',
           tabsBar: '',
+          columnMode: 'false',
+          columnCount: '2',
         },
       }
     },
@@ -179,11 +215,27 @@
       const theme = localStorage.getItem('vue-admin-better-theme')
       if (null !== theme) {
         this.theme = JSON.parse(theme)
-        this.handleSaveTheme()
+        // 确保分栏模式属性存在
+        if (!this.theme.columnMode) {
+          this.theme.columnMode = 'false'
+        }
+        if (!this.theme.columnCount) {
+          this.theme.columnCount = '2'
+        }
+        // 立即应用主题设置
+        this.$nextTick(() => {
+          this.handleSaveTheme()
+        })
       } else {
         this.theme.layout = this.layout
         this.theme.header = this.header
         this.theme.tabsBar = this.tabsBar
+        this.theme.columnMode = 'false'
+        this.theme.columnCount = '2'
+        // 应用默认主题设置
+        this.$nextTick(() => {
+          this.handleSaveTheme()
+        })
       }
 
       this.$once('hook:beforeDestroy', () => {
@@ -203,20 +255,80 @@
         this.drawerVisible = true
       },
       handleSaveTheme() {
-        let { name, layout, header, tabsBar } = this.theme
-        localStorage.setItem(
-          'vue-admin-better-theme',
-          `{
-            "name":"${name}",
-            "layout":"${layout}",
-            "header":"${header}",
-            "tabsBar":"${tabsBar}"
-          }`
-        )
-        if (!this.handleIsMobile()) this.changeLayout(layout)
-        this.changeHeader(header)
-        this.changeTabsBar(tabsBar)
-        document.getElementsByTagName('body')[0].className = `vue-admin-better-theme-${name}`
+        let { name, layout, header, tabsBar, columnMode, columnCount } = this.theme
+        
+        // 构建主题数据对象
+        const themeData = {
+          name: name || 'default',
+          layout: layout || 'vertical',
+          header: header || 'fixed',
+          tabsBar: tabsBar || 'false',
+          columnMode: columnMode || 'false',
+          columnCount: columnCount || '2'
+        }
+        
+        // 保存到localStorage
+        localStorage.setItem('vue-admin-better-theme', JSON.stringify(themeData))
+        console.log('主题配置已保存:', themeData)
+        
+        // 更新Vuex状态
+        if (!this.handleIsMobile()) this.changeLayout(themeData.layout)
+        this.changeHeader(themeData.header)
+        this.changeTabsBar(themeData.tabsBar)
+        
+        // 应用主题类名
+        const body = document.getElementsByTagName('body')[0]
+        
+        // 清除之前的主题相关类名
+        const classesToRemove = []
+        body.classList.forEach(className => {
+          if (className.startsWith('vue-admin-better-theme-') ||
+              className.startsWith('blue-white-column-') ||
+              className.startsWith('column-')) {
+            classesToRemove.push(className)
+          }
+        })
+        classesToRemove.forEach(className => body.classList.remove(className))
+        
+        // 应用新的主题类名
+        body.classList.add(`vue-admin-better-theme-${themeData.name}`)
+        
+        // 添加切换动画类
+        body.classList.add('column-switching')
+        
+        // 立即应用分栏模式类名（无延迟）
+        if (themeData.name === 'blue-white' && themeData.columnMode === 'true') {
+          body.classList.add('blue-white-column-mode')
+          body.classList.add('blue-white-column-transition')
+          
+          // 添加对应的列数类名
+          const columnClassMap = {
+            '1': 'column-single',
+            '2': 'column-double',
+            '3': 'column-triple',
+            '4': 'column-quad'
+          }
+          body.classList.add(columnClassMap[themeData.columnCount] || 'column-double')
+          console.log('分栏模式已启用，列数:', themeData.columnCount)
+        }
+        
+        // 触发全局事件通知主题已更新
+        if (window.dispatchEvent) {
+          window.dispatchEvent(new CustomEvent('theme-updated', { detail: themeData }))
+        }
+        
+        // 强制重新渲染Vue组件
+        setTimeout(() => {
+          if (window.dispatchEvent) {
+            window.dispatchEvent(new CustomEvent('force-vue-rerender'))
+          }
+        }, 100)
+        
+        // 移除切换动画类
+        setTimeout(() => {
+          body.classList.remove('column-switching')
+        }, 300)
+        
         this.drawerVisible = false
       },
       handleGetCode() {
@@ -431,6 +543,19 @@
               }
               .preview-content {
                 background: #fff8e1;
+              }
+            }
+
+            &.blue-white-theme {
+              .preview-header {
+                background: #165DFF;
+              }
+              .preview-sidebar {
+                background: #E8F3FF;
+              }
+              .preview-content {
+                background: #FFFFFF;
+                border: 1px solid #E5E6EB;
               }
             }
           }

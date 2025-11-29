@@ -2,6 +2,7 @@
   <el-scrollbar :class="{ 'is-collapse': collapse }" class="side-container">
     <vab-logo />
     <el-menu
+      :key="menuKey"
       active-text-color=" hsla(0, 0%, 100%, 0.95)"
       background-color="#191a23"
       :collapse="collapse"
@@ -22,12 +23,15 @@
   import variables from '@/styles/variables.scss'
   import { mapGetters } from 'vuex'
   import { defaultOopeneds, uniqueOpened } from '@/config'
+  import VabSideItem from './components/VabSideItem'
 
   export default {
     name: 'VabSide',
+    components: { VabSideItem },
     data() {
       return {
         uniqueOpened,
+        menuKey: Date.now(), // 添加key用于强制重新渲染
       }
     },
     computed: {
@@ -52,6 +56,41 @@
         return variables
       },
     },
+    created() {
+      // 监听主题变化事件
+      if (this.$baseEventBus) {
+        this.$baseEventBus.$on('theme-updated', this.handleThemeUpdate)
+        this.$baseEventBus.$on('force-vue-rerender', this.handleForceRerender)
+      }
+      
+      // 监听localStorage变化
+      window.addEventListener('storage', this.handleStorageChange)
+    },
+    beforeDestroy() {
+      // 移除事件监听
+      if (this.$baseEventBus) {
+        this.$baseEventBus.$off('theme-updated', this.handleThemeUpdate)
+        this.$baseEventBus.$off('force-vue-rerender', this.handleForceRerender)
+      }
+      window.removeEventListener('storage', this.handleStorageChange)
+    },
+    methods: {
+      handleThemeUpdate(themeData) {
+        console.log('侧边栏收到主题更新:', themeData)
+        // 强制重新渲染菜单
+        this.menuKey = Date.now()
+      },
+      handleForceRerender() {
+        console.log('侧边栏收到强制重新渲染命令')
+        this.menuKey = Date.now()
+      },
+      handleStorageChange(e) {
+        if (e.key === 'vue-admin-better-theme') {
+          console.log('检测到主题配置变化:', e.newValue)
+          this.menuKey = Date.now()
+        }
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>

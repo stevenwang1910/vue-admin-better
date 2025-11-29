@@ -5,6 +5,7 @@
   "participants": [],
   "homepage": "https://vuejs-core.cn",
   "scripts": {
+    "dev": "node --no-deprecation rspack.js serve",
     "serve:rspack": "node --no-deprecation rspack.js serve",
     "build": "node --no-deprecation rspack.js build",
     "print-info": "node -e \"require('./layouts').donationConsole()\"",

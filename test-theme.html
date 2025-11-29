@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Theme Test</title>
+</head>
+<body>
+    <h1>LocalStorage Theme Data</h1>
+    <div id="theme-data"></div>
+    <script>
+        const themeData = localStorage.getItem('vue-admin-better-theme');
+        document.getElementById('theme-data').innerHTML = '<pre>' + (themeData || 'No theme data found') + '</pre>';
+        
+        // 测试主题切换
+        function testThemeSwitch() {
+            const testTheme = {
+                "name": "blue-white",
+                "layout": "vertical",
+                "header": "fixed",
+                "tabsBar": "true",
+                "columnMode": "true",
+                "columnCount": "2"
+            };
+            localStorage.setItem('vue-admin-better-theme', JSON.stringify(testTheme));
+            location.reload();
+        }
+    </script>
+    <button onclick="testThemeSwitch()">设置测试主题</button>
+</body>
+</html>

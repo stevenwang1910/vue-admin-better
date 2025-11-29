@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题切换测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e4e7ed;
+            border-radius: 6px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .status.success {
+            background: #f0f9ff;
+            border-left: 4px solid #409eff;
+        }
+        .status.error {
+            background: #fef0f0;
+            border-left: 4px solid #f56c6c;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #409eff;
+            color: white;
+        }
+        .btn-success {
+            background: #67c23a;
+            color: white;
+        }
+        .btn-warning {
+            background: #e6a23c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 主题切换测试工具</h1>
+        
+        <div class="test-section">
+            <h3>📊 当前状态检测</h3>
+            <div id="currentStatus" class="status">正在检测...</div>
+            <button class="btn-primary" onclick="checkStatus()">刷新状态</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 主题切换测试</h3>
+            <button class="btn-success" onclick="switchTheme('default')">切换到默认主题</button>
+            <button class="btn-success" onclick="switchTheme('blue-white')">切换到蓝白主题</button>
+            <button class="btn-warning" onclick="toggleColumnMode()">切换分栏模式</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 详细日志</h3>
+            <div id="debugLog" class="status" style="max-height: 300px; overflow-y: auto;"></div>
+            <button class="btn-primary" onclick="clearLog()">清除日志</button>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function checkStatus() {
+            const statusDiv = document.getElementById('currentStatus');
+            const body = document.body;
+            
+            log('=== 开始状态检测 ===');
+            
+            // 检查主题类名
+            const themeClasses = [];
+            body.classList.forEach(className => {
+                if (className.startsWith('vue-admin-better-theme-')) {
+                    themeClasses.push(className);
+                }
+            });
+            
+            // 检查分栏模式
+            const hasColumnMode = body.classList.contains('blue-white-column-mode');
+            const hasColumnTransition = body.classList.contains('blue-white-column-transition');
+            
+            // 检查列数类名
+            const columnClasses = [];
+            body.classList.forEach(className => {
+                if (className.startsWith('column-')) {
+                    columnClasses.push(className);
+                }
+            });
+            
+            // 检查localStorage
+            const themeData = localStorage.getItem('vue-admin-better-theme');
+            
+            log(`主题类名: ${themeClasses.join(', ') || '无'}`);
+            log(`分栏模式: ${hasColumnMode ? '启用' : '禁用'}`);
+            log(`分栏过渡: ${hasColumnTransition ? '启用' : '禁用'}`);
+            log(`列数类名: ${columnClasses.join(', ') || '无'}`);
+            log(`localStorage数据: ${themeData || '无'}`);
+            
+            // 更新状态显示
+            let statusHtml = `<strong>当前状态:</strong><br>`;
+            statusHtml += `主题: ${themeClasses.join(', ') || '默认'}<br>`;
+            statusHtml += `分栏模式: ${hasColumnMode ? '✅ 启用' : '❌ 禁用'}<br>`;
+            statusHtml += `列数: ${columnClasses.join(', ') || '默认'}<br>`;
+            statusHtml += `localStorage: ${themeData ? '✅ 有数据' : '❌ 无数据'}`;
+            
+            statusDiv.innerHTML = statusHtml;
+            statusDiv.className = 'status success';
+            
+            log('=== 状态检测完成 ===');
+        }
+
+        function switchTheme(themeName) {
+            log(`正在切换到主题: ${themeName}`);
+            
+            // 获取当前主题配置
+            let themeConfig = {};
+            const currentTheme = localStorage.getItem('vue-admin-better-theme');
+            if (currentTheme) {
+                try {
+                    themeConfig = JSON.parse(currentTheme);
+                } catch (e) {
+                    log('解析当前主题配置失败');
+                }
+            }
+            
+            // 更新主题配置
+            themeConfig.name = themeName;
+            
+            // 保存到localStorage
+            localStorage.setItem('vue-admin-better-theme', JSON.stringify(themeConfig));
+            log('主题配置已保存到localStorage');
+            
+            // 触发自定义事件
+            if (window.dispatchEvent) {
+                window.dispatchEvent(new CustomEvent('theme-updated', { detail: themeConfig }));
+                log('已触发 theme-updated 事件');
+            }
+            
+            // 重新检查状态
+            setTimeout(() => {
+                checkStatus();
+            }, 100);
+        }
+
+        function toggleColumnMode() {
+            log('正在切换分栏模式...');
+            
+            // 获取当前主题配置
+            let themeConfig = {};
+            const currentTheme = localStorage.getItem('vue-admin-better-theme');
+            if (currentTheme) {
+                try {
+                    themeConfig = JSON.parse(currentTheme);
+                } catch (e) {
+                    log('解析当前主题配置失败');
+                }
+            }
+            
+            // 确保是蓝白主题
+            if (themeConfig.name !== 'blue-white') {
+                themeConfig.name = 'blue-white';
+            }
+            
+            // 切换分栏模式
+            themeConfig.columnMode = themeConfig.columnMode === 'true' ? 'false' : 'true';
+            if (!themeConfig.columnCount) {
+                themeConfig.columnCount = '2';
+            }
+            
+            // 保存到localStorage
+            localStorage.setItem('vue-admin-better-theme', JSON.stringify(themeConfig));
+            log(`分栏模式已切换到: ${themeConfig.columnMode}`);
+            
+            // 触发自定义事件
+            if (window.dispatchEvent) {
+                window.dispatchEvent(new CustomEvent('theme-updated', { detail: themeConfig }));
+                log('已触发 theme-updated 事件');
+            }
+            
+            // 重新检查状态
+            setTimeout(() => {
+                checkStatus();
+            }, 100);
+        }
+
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+
+        // 页面加载时检查状态
+        window.onload = function() {
+            log('页面加载完成，开始初始化检测...');
+            checkStatus();
+        };
+
+        // 监听主题更新事件
+        window.addEventListener('theme-updated', function(e) {
+            log(`收到主题更新事件: ${JSON.stringify(e.detail)}`);
+            setTimeout(() => {
+                checkStatus();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
