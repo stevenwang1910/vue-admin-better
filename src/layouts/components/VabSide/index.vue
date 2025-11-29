@@ -2,15 +2,17 @@
   <el-scrollbar :class="{ 'is-collapse': collapse }" class="side-container">
     <vab-logo />
     <el-menu
-      active-text-color=" hsla(0, 0%, 100%, 0.95)"
-      background-color="#191a23"
+      active-text-color="var(--menu-active-text-color)"
+      background-color="var(--menu-background)"
       :collapse="collapse"
       :collapse-transition="false"
       :default-active="activeMenu"
       :default-openeds="defaultOpens"
-      text-color=" hsla(0, 0%, 100%, 0.95)"
+      text-color="var(--menu-text-color)"
       :unique-opened="uniqueOpened"
       mode="vertical"
+      :class="{ 'column-layout': theme.columnLayout }"
+      :style="{ '--column-count': theme.columnCount }"
     >
       <template v-for="route in routes">
         <vab-side-item :full-path="route.path" :item="route" />
@@ -31,10 +33,11 @@
       }
     },
     computed: {
-      ...mapGetters({
-        collapse: 'settings/collapse',
-        routes: 'routes/routes',
-      }),
+    ...mapGetters({
+      collapse: 'settings/collapse',
+      routes: 'routes/routes',
+      theme: 'settings/theme',
+    }),
       defaultOpens() {
         if (this.collapse) {
         }
@@ -54,7 +57,7 @@
     },
   }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
   @mixin active {
     &:hover {
       color: $base-color-white;
@@ -67,7 +70,18 @@
     }
   }
 
-  .side-container {
+  .vue-admin-better-theme-default .side-container {
+  --menu-background: $base-menu-background;
+  --menu-active-text-color: $base-menu-color-active;
+  --menu-text-color: $base-menu-color;
+}
+.vue-admin-better-theme-blueWhite .side-container {
+  --menu-background: #ffffff;
+  --menu-active-text-color: #165dff;
+  --menu-text-color: #333333;
+}
+
+.side-container {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -79,6 +93,15 @@
     background: $base-menu-background;
     box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
     transition: width $base-transition-time;
+
+    &:not(.is-collapse) {
+      .el-menu.column-layout {
+        display: grid;
+        grid-template-columns: repeat(var(--column-count), 1fr);
+        gap: 10px;
+        padding: 0 10px;
+      }
+    }
 
     &.is-collapse {
       width: $base-left-menu-width-min;

@@ -67,6 +67,21 @@
                   </div>
                   <span class="theme-name">荣耀典藏</span>
                 </div>
+                <div
+                  class="theme-option"
+                  :class="{ active: theme.name === 'blueWhite' }"
+                  @click="
+                    theme.name = 'blueWhite'
+                    handleSaveTheme()
+                  "
+                >
+                  <div class="theme-preview blue-white-theme">
+                    <div class="preview-header"></div>
+                    <div class="preview-sidebar"></div>
+                    <div class="preview-content"></div>
+                  </div>
+                  <span class="theme-name">蓝白模式</span>
+                </div>
               </div>
             </div>
 
@@ -107,6 +122,29 @@
                     </div>
                   </div>
                   <span class="layout-name">横向布局</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="section-header">
+                <i class="el-icon-s-data"></i>
+                <span>菜单分栏设置</span>
+              </div>
+              <div class="feature-options">
+                <div class="feature-item">
+                  <div class="feature-info">
+                    <span class="feature-name">分栏模式</span>
+                    <span class="feature-desc">开启子菜单多列分栏展示</span>
+                  </div>
+                  <el-switch v-model="theme.columnLayout" active-value="true" inactive-value="false" @change="handleSaveTheme" />
+                </div>
+                <div class="feature-item">
+                  <div class="feature-info">
+                    <span class="feature-name">分栏数量</span>
+                    <span class="feature-desc">自定义子菜单分栏数量</span>
+                  </div>
+                  <el-input-number v-model="theme.columnCount" :min="1" :max="5" :step="1" @change="handleSaveTheme" />
                 </div>
               </div>
             </div>
@@ -159,6 +197,8 @@
           layout: '',
           header: 'fixed',
           tabsBar: '',
+          columnLayout: 'false',
+          columnCount: 2,
         },
       }
     },
@@ -431,6 +471,20 @@
               }
               .preview-content {
                 background: #fff8e1;
+              }
+            }
+
+            &.blue-white-theme {
+              .preview-header {
+                background: #165DFF;
+              }
+
+              .preview-sidebar {
+                background: #FFFFFF;
+              }
+
+              .preview-content {
+                background: #E8F3FF;
               }
             }
           }
