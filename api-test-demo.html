@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据表格API测试演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .api-section {
+            margin-bottom: 40px;
+        }
+        
+        .api-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .api-endpoint {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .endpoint-header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .method {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .method.get { background: #28a745; }
+        .method.post { background: #007bff; }
+        .method.put { background: #ffc107; color: #333; }
+        .method.delete { background: #dc3545; }
+        
+        .endpoint-content {
+            padding: 20px;
+        }
+        
+        .endpoint-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .params-table th,
+        .params-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .params-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .required {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .optional {
+            color: #6c757d;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .response-area {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .response-area.show {
+            display: block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .sample-data {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .sample-data h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .data-item {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 数据表格API测试</h1>
+            <p>模拟数据表格页面的各种API调用和数据交互功能</p>
+        </div>
+        
+        <div class="content">
+            <div class="api-section">
+                <h2>📋 数据获取API</h2>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span>获取数据列表</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-content">
+                        <div class="endpoint-description">
+                            获取分页数据列表，支持搜索、筛选、排序等参数
+                        </div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>类型</th>
+                                    <th>必填</th>
+                                    <th>描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>page</td>
+                                    <td>number</td>
+                                    <td><span class="required">是</span></td>
+                                    <td>当前页码，默认为1</td>
+                                </tr>
+                                <tr>
+                                    <td>pageSize</td>
+                                    <td>number</td>
+                                    <td><span class="required">是</span></td>
+                                    <td>每页条数，默认为10</td>
+                                </tr>
+                                <tr>
+                                    <td>title</td>
+                                    <td>string</td>
+                                    <td><span class="optional">否</span></td>
+                                    <td>标题关键词搜索</td>
+                                </tr>
+                                <tr>
+                                    <td>author</td>
+                                    <td>string</td>
+                                    <td><span class="optional">否</span></td>
+                                    <td>作者名称筛选</td>
+                                </tr>
+                                <tr>
+                                    <td>status</td>
+                                    <td>string</td>
+                                    <td><span class="optional">否</span></td>
+                                    <td>状态筛选(published/draft/deleted)</td>
+                                </tr>
+                                <tr>
+                                    <td>sort</td>
+                                    <td>string</td>
+                                    <td><span class="optional">否</span></td>
+                                    <td>排序字段(id/title/createTime/rating)</td>
+                                </tr>
+                                <tr>
+                                    <td>order</td>
+                                    <td>string</td>
+                                    <td><span class="optional">否</span></td>
+                                    <td>排序方式(asc/desc)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="test-button" onclick="testGetList()">🧪 测试获取列表</button>
+                        <button class="test-button" onclick="testSearch()">🔍 测试搜索功能</button>
+                        <button class="test-button" onclick="testFilter()">🔧 测试筛选功能</button>
+                        <div id="list-response" class="response-area"></div>
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span>获取单条数据详情</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-content">
+                        <div class="endpoint-description">
+                            根据ID获取单条数据的详细信息
+                        </div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>类型</th>
+                                    <th>必填</th>
+                                    <th>描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>number</td>
+                                    <td><span class="required">是</span></td>
+                                    <td>数据ID</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="test-button" onclick="testGetDetail()">🧪 测试获取详情</button>
+                        <div id="detail-response" class="response-area"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h2>✏️ 数据操作API</h2>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span>创建新数据</span>
+                        <span class="method post">POST</span>
+                    </div>
+                    <div class="endpoint-content">
+                        <div class="endpoint-description">
+                            创建新的数据记录
+                        </div>
+                        <div class="sample-data">
+                            <h4>示例请求数据：</h4>
+                            <div class="data-item">
+                                <strong>title:</strong> "Vue.js 3.0 新特性详解"<br>
+                                <strong>author:</strong> "张三"<br>
+                                <strong>content:</strong> "Vue 3.0 带来了许多激动人心的新特性..."<br>
+                                <strong>rating:</strong> 5<br>
+                                <strong>status:</strong> "published"
+                            </div>
+                        </div>
+                        <button class="test-button" onclick="testCreate()">🧪 测试创建数据</button>
+                        <div id="create-response" class="response-area"></div>
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span>更新数据</span>
+                        <span class="method put">PUT</span>
+                    </div>
+                    <div class="endpoint-content">
+                        <div class="endpoint-description">
+                            更新现有数据记录
+                        </div>
+                        <div class="sample-data">
+                            <h4>示例请求数据：</h4>
+                            <div class="data-item">
+                                <strong>id:</strong> 1<br>
+                                <strong>title:</strong> "Vue.js 3.0 新特性详解 (更新版)"<br>
+                                <strong>status:</strong> "published"<br>
+                                <strong>rating:</strong> 4
+                            </div>
+                        </div>
+                        <button class="test-button" onclick="testUpdate()">🧪 测试更新数据</button>
+                        <div id="update-response" class="response-area"></div>
+                    </div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div class="endpoint-header">
+                        <span>删除数据</span>
+                        <span class="method delete">DELETE</span>
+                    </div>
+                    <div class="endpoint-content">
+                        <div class="endpoint-description">
+                            删除指定的数据记录（支持批量删除）
+                        </div>
+                        <div class="sample-data">
+                            <h4>示例请求：</h4>
+                            <div class="data-item">
+                                <strong>单个删除:</strong> DELETE /api/data/1<br>
+                                <strong>批量删除:</strong> DELETE /api/data/batch<br>
+                                <strong>请求体:</strong> { ids: [1, 2, 3] }
+                            </div>
+                        </div>
+                        <button class="test-button" onclick="testDelete()">🧪 测试删除数据</button>
+                        <button class="test-button" onclick="testBatchDelete()">🗑️ 测试批量删除</button>
+                        <div id="delete-response" class="response-area"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟API响应数据
+        const mockData = {
+            list: {
+                code: 200,
+                message: "success",
+                data: {
+                    total: 156,
+                    page: 1,
+                    pageSize: 10,
+                    list: [
+                        {
+                            id: 1,
+                            title: "Vue.js 3.0 新特性详解与实战应用",
+                            author: "张三",
+                            rating: 5,
+                            ratingCount: 128,
+                            status: "published",
+                            createTime: "2024-01-15 14:30:00",
+                            image: "https://via.placeholder.com/60x60/667eea/ffffff?text=Vue",
+                            content: "Vue 3.0 带来了许多激动人心的新特性，包括Composition API、更好的TypeScript支持、性能优化等..."
+                        },
+                        {
+                            id: 2,
+                            title: "React Hooks 最佳实践指南",
+                            author: "李四",
+                            rating: 4,
+                            ratingCount: 86,
+                            status: "published",
+                            createTime: "2024-01-14 09:15:00",
+                            image: "https://via.placeholder.com/60x60/764ba2/ffffff?text=React",
+                            content: "React Hooks 彻底改变了我们编写React组件的方式，本文将详细介绍各种Hooks的使用场景和最佳实践..."
+                        },
+                        {
+                            id: 3,
+                            title: "前端性能优化实战技巧总结",
+                            author: "王五",
+                            rating: 5,
+                            ratingCount: 256,
+                            status: "draft",
+                            createTime: "2024-01-13 16:45:00",
+                            image: "https://via.placeholder.com/60x60/28a745/ffffff?text=Perf",
+                            content: "性能优化是前端开发中的重要环节，本文总结了代码分割、懒加载、缓存策略等实用技巧..."
+                        }
+                    ]
+                }
+            },
+            detail: {
+                code: 200,
+                message: "success",
+                data: {
+                    id: 1,
+                    title: "Vue.js 3.0 新特性详解与实战应用",
+                    author: "张三",
+                    rating: 5,
+                    ratingCount: 128,
+                    status: "published",
+                    createTime: "2024-01-15 14:30:00",
+                    updateTime: "2024-01-15 16:20:00",
+                    image: "https://via.placeholder.com/60x60/667eea/ffffff?text=Vue",
+                    content: "Vue 3.0 带来了许多激动人心的新特性，包括Composition API、更好的TypeScript支持、性能优化等。本文将通过实际案例详细介绍这些新特性的使用方法，帮助开发者快速上手Vue 3.0开发。",
+                    tags: ["Vue.js", "JavaScript", "Frontend"],
+                    views: 1248,
+                    likes: 89,
+                    comments: 23
+                }
+            },
+            create: {
+                code: 200,
+                message: "创建成功",
+                data: { id: 4 }
+            },
+            update: {
+                code: 200,
+                message: "更新成功",
+                data: { id: 1 }
+            },
+            delete: {
+                code: 200,
+                message: "删除成功",
+                data: { ids: [1] }
+            },
+            batchDelete: {
+                code: 200,
+                message: "批量删除成功",
+                data: { ids: [1, 2, 3] }
+            }
+        };
+        
+        // 模拟API调用
+        function simulateApiCall(responseData, delay = 800) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(responseData);
+                }, delay);
+            });
+        }
+        
+        // 显示响应数据
+        function showResponse(elementId, data, status = 'success') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="status-${status}">
+                    <strong>${status === 'success' ? '✅ 成功' : '❌ 失败'}</strong> - ${new Date().toLocaleTimeString()}
+                </div>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            element.classList.add('show');
+        }
+        
+        // 测试获取列表
+        async function testGetList() {
+            const button = event.target;
+            button.innerHTML = '🧪 测试中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const response = await simulateApiCall(mockData.list);
+                showResponse('list-response', response);
+            } catch (error) {
+                showResponse('list-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🧪 测试获取列表';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试搜索功能
+        async function testSearch() {
+            const button = event.target;
+            button.innerHTML = '🔍 搜索中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const searchData = {
+                    ...mockData.list,
+                    message: "搜索成功",
+                    data: {
+                        ...mockData.list.data,
+                        total: 2,
+                        list: mockData.list.data.list.filter(item => 
+                            item.title.includes("Vue") || item.author.includes("张")
+                        )
+                    }
+                };
+                const response = await simulateApiCall(searchData);
+                showResponse('list-response', response);
+            } catch (error) {
+                showResponse('list-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🔍 测试搜索功能';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试筛选功能
+        async function testFilter() {
+            const button = event.target;
+            button.innerHTML = '🔧 筛选中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const filterData = {
+                    ...mockData.list,
+                    message: "筛选成功",
+                    data: {
+                        ...mockData.list.data,
+                        total: 1,
+                        list: mockData.list.data.list.filter(item => item.status === "published")
+                    }
+                };
+                const response = await simulateApiCall(filterData);
+                showResponse('list-response', response);
+            } catch (error) {
+                showResponse('list-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🔧 测试筛选功能';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试获取详情
+        async function testGetDetail() {
+            const button = event.target;
+            button.innerHTML = '🧪 获取中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const response = await simulateApiCall(mockData.detail);
+                showResponse('detail-response', response);
+            } catch (error) {
+                showResponse('detail-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🧪 测试获取详情';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试创建数据
+        async function testCreate() {
+            const button = event.target;
+            button.innerHTML = '🧪 创建中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const response = await simulateApiCall(mockData.create);
+                showResponse('create-response', response);
+            } catch (error) {
+                showResponse('create-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🧪 测试创建数据';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试更新数据
+        async function testUpdate() {
+            const button = event.target;
+            button.innerHTML = '🧪 更新中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const response = await simulateApiCall(mockData.update);
+                showResponse('update-response', response);
+            } catch (error) {
+                showResponse('update-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🧪 测试更新数据';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试删除数据
+        async function testDelete() {
+            const button = event.target;
+            button.innerHTML = '🧪 删除中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const response = await simulateApiCall(mockData.delete);
+                showResponse('delete-response', response);
+            } catch (error) {
+                showResponse('delete-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🧪 测试删除数据';
+                button.disabled = false;
+            }
+        }
+        
+        // 测试批量删除
+        async function testBatchDelete() {
+            const button = event.target;
+            button.innerHTML = '🗑️ 批量删除中<span class="loading"></span>';
+            button.disabled = true;
+            
+            try {
+                const response = await simulateApiCall(mockData.batchDelete);
+                showResponse('delete-response', response);
+            } catch (error) {
+                showResponse('delete-response', { error: error.message }, 'error');
+            } finally {
+                button.innerHTML = '🗑️ 测试批量删除';
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
