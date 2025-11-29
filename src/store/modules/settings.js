@@ -6,7 +6,7 @@
 import defaultSettings from '@/config'
 
 const { tabsBar, logo, layout, header, themeBar } = defaultSettings
-const theme = JSON.parse(localStorage.getItem('vue-admin-better-theme')) || ''
+const theme = JSON.parse(localStorage.getItem('vue-admin-better-theme')) || {}
 const state = () => ({
   tabsBar: theme.tabsBar || tabsBar,
   logo,
@@ -15,6 +15,7 @@ const state = () => ({
   header: theme.header || header,
   device: 'desktop',
   themeBar,
+  theme: theme || '',
 })
 const getters = {
   collapse: (state) => state.collapse,
@@ -24,6 +25,7 @@ const getters = {
   logo: (state) => state.logo,
   tabsBar: (state) => state.tabsBar,
   themeBar: (state) => state.themeBar,
+  theme: (state) => state.theme,
 }
 const mutations = {
   changeLayout: (state, layout) => {
