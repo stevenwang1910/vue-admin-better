@@ -136,6 +136,12 @@ export const asyncRoutes = [
         meta: { title: '表单', permissions: ['admin'] },
       },
       {
+        path: 'activity-form',
+        name: 'ActivityForm',
+        component: () => import('@/views/activity/index'),
+        meta: { title: '活动表单', permissions: ['admin'] },
+      },
+      {
         path: 'element',
         name: 'Element',
         component: () => import('@/views/vab/element/index'),
