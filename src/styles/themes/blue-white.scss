@@ -1,0 +1,229 @@
+/* 蓝白主题样式 */
+
+// 主色调定义
+$blue-white-primary: #1890ff;
+$blue-white-primary-light: #40a9ff;
+$blue-white-primary-dark: #096dd9;
+$blue-white-background: #f0f2f5;
+$blue-white-sidebar: #ffffff;
+$blue-white-header: #ffffff;
+$blue-white-text: #333333;
+$blue-white-text-secondary: #666666;
+$blue-white-border: #e8e8e8;
+$blue-white-shadow: rgba(0, 0, 0, 0.1);
+
+// 基础变量覆盖
+:root {
+  --base-color-blue: #{$blue-white-primary};
+  --base-color-green: #{$blue-white-primary-light};
+  --base-color-red: #ff4d4f;
+  --base-color-yellow: #faad14;
+  --base-color-purple: #722ed1;
+  --base-color-cyan: #13c2c2;
+  --base-color-white: #ffffff;
+  --base-color-black: #000000;
+  --base-color-gray: #f5f5f5;
+  
+  // 布局颜色
+  --base-background-color: #{$blue-white-background};
+  --base-menu-background: #{$blue-white-sidebar};
+  --base-menu-background-active: #{$blue-white-primary};
+  --base-header-background: #{$blue-white-header};
+  --base-header-color: #{$blue-white-text};
+  
+  // 文字颜色
+  --base-color-default: #{$blue-white-text};
+  --base-color-secondary: #{$blue-white-text-secondary};
+  
+  // 边框和阴影
+  --base-border-color: #{$blue-white-border};
+  --base-box-shadow: 0 2px 8px #{$blue-white-shadow};
+}
+
+// 蓝白主题样式
+.vue-admin-better-theme-blue-white {
+  // 整体背景
+  background-color: $blue-white-background;
+  
+  // 头部样式
+  .vab-header {
+    background-color: $blue-white-header;
+    border-bottom: 1px solid $blue-white-border;
+    box-shadow: 0 1px 4px $blue-white-shadow;
+    
+    .vab-header-left,
+    .vab-header-right {
+      color: $blue-white-text;
+    }
+  }
+  
+  // 侧边栏样式
+  .side-container {
+    background-color: $blue-white-sidebar;
+    border-right: 1px solid $blue-white-border;
+    box-shadow: 2px 0 6px $blue-white-shadow;
+    
+    .el-menu {
+      background-color: $blue-white-sidebar;
+      
+      .el-menu-item,
+      .el-submenu__title {
+        color: $blue-white-text;
+        
+        &:hover {
+          background-color: rgba($blue-white-primary, 0.1);
+          color: $blue-white-primary;
+        }
+        
+        &.is-active {
+          background-color: rgba($blue-white-primary, 0.15);
+          color: $blue-white-primary;
+          border-right: 3px solid $blue-white-primary;
+        }
+      }
+      
+      .el-submenu .el-menu-item {
+        background-color: rgba($blue-white-primary, 0.05);
+        
+        &:hover {
+          background-color: rgba($blue-white-primary, 0.1);
+        }
+        
+        &.is-active {
+          background-color: rgba($blue-white-primary, 0.15);
+        }
+      }
+    }
+  }
+  
+  // 主内容区域
+  .vab-main {
+    background-color: $blue-white-background;
+    
+    .vab-main-content {
+      background-color: #ffffff;
+      border: 1px solid $blue-white-border;
+      box-shadow: 0 2px 8px $blue-white-shadow;
+    }
+  }
+  
+  // 卡片样式
+  .el-card {
+    background-color: #ffffff;
+    border: 1px solid $blue-white-border;
+    box-shadow: 0 2px 8px $blue-white-shadow;
+    
+    .el-card__header {
+      background-color: rgba($blue-white-primary, 0.05);
+      border-bottom: 1px solid $blue-white-border;
+      color: $blue-white-text;
+    }
+  }
+  
+  // 按钮样式
+  .el-button--primary {
+    background-color: $blue-white-primary;
+    border-color: $blue-white-primary;
+    
+    &:hover {
+      background-color: $blue-white-primary-light;
+      border-color: $blue-white-primary-light;
+    }
+    
+    &:active {
+      background-color: $blue-white-primary-dark;
+      border-color: $blue-white-primary-dark;
+    }
+  }
+  
+  // 输入框样式
+  .el-input__inner,
+  .el-textarea__inner {
+    background-color: #ffffff;
+    border: 1px solid $blue-white-border;
+    color: $blue-white-text;
+    
+    &:focus {
+      border-color: $blue-white-primary;
+      box-shadow: 0 0 0 2px rgba($blue-white-primary, 0.2);
+    }
+  }
+  
+  // 表格样式
+  .el-table {
+    background-color: #ffffff;
+    color: $blue-white-text;
+    
+    th {
+      background-color: rgba($blue-white-primary, 0.05);
+      color: $blue-white-text;
+      font-weight: 600;
+    }
+    
+    tr {
+      background-color: #ffffff;
+      
+      &:hover {
+        background-color: rgba($blue-white-primary, 0.05);
+      }
+    }
+    
+    td {
+      border-bottom: 1px solid $blue-white-border;
+    }
+  }
+  
+  // 分页样式
+  .el-pagination {
+    .el-pager li {
+      background-color: #ffffff;
+      border: 1px solid $blue-white-border;
+      
+      &.active {
+        background-color: $blue-white-primary;
+        border-color: $blue-white-primary;
+        color: #ffffff;
+      }
+      
+      &:hover {
+        color: $blue-white-primary;
+      }
+    }
+    
+    .btn-prev,
+    .btn-next {
+      background-color: #ffffff;
+      border: 1px solid $blue-white-border;
+      
+      &:hover {
+        color: $blue-white-primary;
+        border-color: $blue-white-primary;
+      }
+    }
+  }
+}
+
+// 蓝白主题分栏模式
+.blue-white-column-mode {
+  // 分栏模式下的特殊样式
+  .side-container {
+    .el-menu {
+      .el-menu-item,
+      .el-submenu__title {
+        padding-left: 20px !important;
+        
+        &.is-active {
+          border-right: none;
+          border-left: 3px solid $blue-white-primary;
+        }
+      }
+    }
+  }
+  
+  // 分栏模式动画
+  &.blue-white-column-transition {
+    .side-container {
+      transition: all 0.3s ease;
+    }
+  }
+}

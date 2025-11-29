@@ -39,6 +39,21 @@
                 </div>
                 <div
                   class="theme-option"
+                  :class="{ active: theme.name === 'blue-white' }"
+                  @click="
+                    theme.name = 'blue-white'
+                    handleSaveTheme()
+                  "
+                >
+                  <div class="theme-preview blue-white-theme">
+                    <div class="preview-header"></div>
+                    <div class="preview-sidebar"></div>
+                    <div class="preview-content"></div>
+                  </div>
+                  <span class="theme-name">蓝白主题</span>
+                </div>
+                <div
+                  class="theme-option"
                   :class="{ active: theme.name === 'green' }"
                   @click="
                     theme.name = 'green'
@@ -148,6 +163,7 @@
 <script>
   import { mapActions, mapGetters } from 'vuex'
   import { layout as defaultLayout } from '@/config'
+  import { initTheme, switchTheme, getThemeConfig, saveThemeConfig } from '@/utils/theme'
 
   export default {
     name: 'VabTheme',
@@ -176,9 +192,11 @@
       }
 
       this.$baseEventBus.$on('theme', handleTheme)
-      const theme = localStorage.getItem('vue-admin-better-theme')
-      if (null !== theme) {
-        this.theme = JSON.parse(theme)
+      
+      // 使用主题工具函数初始化主题
+      const themeConfig = getThemeConfig()
+      if (themeConfig.name) {
+        this.theme = { ...this.theme, ...themeConfig }
         this.handleSaveTheme()
       } else {
         this.theme.layout = this.layout
@@ -204,19 +222,27 @@
       },
       handleSaveTheme() {
         let { name, layout, header, tabsBar } = this.theme
-        localStorage.setItem(
-          'vue-admin-better-theme',
-          `{
-            "name":"${name}",
-            "layout":"${layout}",
-            "header":"${header}",
-            "tabsBar":"${tabsBar}"
-          }`
-        )
+        
+        // 使用主题工具函数保存和应用主题
+        const config = {
+          name,
+          layout,
+          header,
+          tabsBar
+        }
+        
+        // 如果是蓝白主题，检查是否需要分栏模式
+        if (name === 'blue-white' && this.theme.columnMode) {
+          config.columnMode = this.theme.columnMode
+        }
+        
+        saveThemeConfig(config)
+        switchTheme(name, { columnMode: this.theme.columnMode })
+        
         if (!this.handleIsMobile()) this.changeLayout(layout)
         this.changeHeader(header)
         this.changeTabsBar(tabsBar)
-        document.getElementsByTagName('body')[0].className = `vue-admin-better-theme-${name}`
+        
         this.drawerVisible = false
       },
       handleGetCode() {
@@ -407,6 +433,19 @@
               }
               .preview-content {
                 background: #ffffff;
+              }
+            }
+
+            &.blue-white-theme {
+              .preview-header {
+                background: #1890ff;
+              }
+              .preview-sidebar {
+                background: #ffffff;
+                border-right: 1px solid #e8e8e8;
+              }
+              .preview-content {
+                background: #f0f2f5;
               }
             }
 

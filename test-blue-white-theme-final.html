@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝白主题功能测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .test-section {
+            margin: 25px 0;
+            padding: 20px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            color: #34495e;
+            margin-top: 0;
+            font-size: 18px;
+        }
+        .btn {
+            padding: 12px 24px;
+            margin: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #1890ff, #40a9ff);
+            color: white;
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #52c41a, #73d13d);
+            color: white;
+        }
+        .btn-warning {
+            background: linear-gradient(45deg, #faad14, #ffc53d);
+            color: white;
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4d4f, #ff7875);
+            color: white;
+        }
+        .btn-info {
+            background: linear-gradient(45deg, #722ed1, #9254de);
+            color: white;
+        }
+        .status {
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+        .status-success {
+            background: #f6ffed;
+            border-color: #52c41a;
+            color: #52c41a;
+        }
+        .status-error {
+            background: #fff2f0;
+            border-color: #ff4d4f;
+            color: #ff4d4f;
+        }
+        .status-warning {
+            background: #fffbe6;
+            border-color: #faad14;
+            color: #faad14;
+        }
+        .status-info {
+            background: #f9f0ff;
+            border-color: #722ed1;
+            color: #722ed1;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e8e8e8;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+        .feature-list li:before {
+            content: "✓";
+            color: #52c41a;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .theme-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .preview-header {
+            height: 40px;
+            background: #1890ff;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+            font-weight: 500;
+        }
+        .preview-sidebar {
+            position: absolute;
+            left: 0;
+            top: 40px;
+            width: 80px;
+            bottom: 0;
+            background: white;
+            border-right: 1px solid #e8e8e8;
+            padding: 15px 10px;
+            color: #333;
+            font-size: 12px;
+        }
+        .preview-content {
+            position: absolute;
+            left: 80px;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            background: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+        .column-mode .preview-sidebar {
+            width: 60px;
+            padding: 15px 5px;
+            text-align: center;
+        }
+        .column-mode .preview-content {
+            left: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 蓝白主题功能测试中心</h1>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>📋 功能清单</h3>
+                <ul class="feature-list">
+                    <li>蓝白主题样式文件 (blue-white.scss)</li>
+                    <li>主题配置组件集成</li>
+                    <li>主题工具函数</li>
+                    <li>分栏模式支持</li>
+                    <li>主题切换功能</li>
+                    <li>强制刷新菜单</li>
+                    <li>localStorage 持久化</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>🎯 测试步骤</h3>
+                <div class="code-block">
+1. 点击"切换到蓝白主题"按钮
+2. 观察页面样式变化
+3. 测试分栏模式切换
+4. 验证主题持久化
+5. 检查菜单刷新功能
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 主题切换测试</h3>
+            <button class="btn btn-primary" onclick="switchToBlueWhite()">切换到蓝白主题</button>
+            <button class="btn btn-success" onclick="switchToDefault()">切换到默认主题</button>
+            <button class="btn btn-warning" onclick="switchToGreen()">切换到绿荫草场</button>
+            <button class="btn btn-info" onclick="switchToGlory()">切换到荣耀典藏</button>
+            <div id="theme-status" class="status status-info">当前主题: 检测中...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📐 分栏模式测试</h3>
+            <button class="btn btn-primary" onclick="enableColumnMode()">启用分栏模式</button>
+            <button class="btn btn-warning" onclick="disableColumnMode()">禁用分栏模式</button>
+            <button class="btn btn-success" onclick="toggleColumnMode()">切换分栏模式</button>
+            <div id="column-status" class="status status-info">分栏模式: 检测中...</div>
+            
+            <div class="theme-preview" id="preview-normal">
+                <div class="preview-header">蓝白主题 - 标准模式</div>
+                <div class="preview-sidebar">
+                    <div>📊 仪表板</div>
+                    <div>📋 表格</div>
+                    <div>📝 表单</div>
+                </div>
+                <div class="preview-content">
+                    <div>主内容区域 - 标准布局</div>
+                    <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                        侧边栏宽度: 80px
+                    </div>
+                </div>
+            </div>
+            
+            <div class="theme-preview column-mode" id="preview-column" style="display: none;">
+                <div class="preview-header">蓝白主题 - 分栏模式</div>
+                <div class="preview-sidebar">
+                    <div>📊</div>
+                    <div>📋</div>
+                    <div>📝</div>
+                </div>
+                <div class="preview-content">
+                    <div>主内容区域 - 分栏布局</div>
+                    <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                        侧边栏宽度: 60px (图标模式)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>💾 持久化测试</h3>
+            <button class="btn btn-primary" onclick="saveThemeConfig()">保存当前配置</button>
+            <button class="btn btn-success" onclick="loadThemeConfig()">加载保存的配置</button>
+            <button class="btn btn-warning" onclick="clearThemeConfig()">清除配置</button>
+            <button class="btn btn-info" onclick="showCurrentConfig()">显示当前配置</button>
+            <div id="config-display" class="code-block" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 强制刷新测试</h3>
+            <button class="btn btn-primary" onclick="forceMenuRefresh()">强制刷新菜单</button>
+            <button class="btn btn-success" onclick="simulateMenuUpdate()">模拟菜单更新</button>
+            <div id="refresh-status" class="status status-info">菜单状态: 正常</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 综合状态监控</h3>
+            <div id="comprehensive-status" class="code-block">
+                正在检测系统状态...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 主题工具函数（模拟实现）
+        const themeUtils = {
+            getThemeConfig: function() {
+                try {
+                    const config = localStorage.getItem('vue-admin-better-theme');
+                    return config ? JSON.parse(config) : { name: 'default' };
+                } catch (error) {
+                    return { name: 'default' };
+                }
+            },
+            
+            saveThemeConfig: function(config) {
+                try {
+                    localStorage.setItem('vue-admin-better-theme', JSON.stringify(config));
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            },
+            
+            applyTheme: function(themeName) {
+                document.body.className = `vue-admin-better-theme-${themeName}`;
+                this.updateStatus();
+            },
+            
+            switchTheme: function(themeName, options = {}) {
+                const config = this.getThemeConfig();
+                config.name = themeName;
+                
+                if (themeName === 'blue-white' && options.columnMode !== undefined) {
+                    config.columnMode = options.columnMode.toString();
+                    this.handleBlueWhiteColumnMode(options.columnMode);
+                }
+                
+                this.applyTheme(themeName);
+                this.saveThemeConfig(config);
+            },
+            
+            handleBlueWhiteColumnMode: function(enable) {
+                if (enable) {
+                    document.body.classList.add('blue-white-column-mode', 'blue-white-column-transition');
+                } else {
+                    document.body.classList.remove('blue-white-column-mode', 'blue-white-column-transition');
+                }
+                this.updateColumnStatus();
+            },
+            
+            isBlueWhiteTheme: function() {
+                const config = this.getThemeConfig();
+                return config.name === 'blue-white';
+            },
+            
+            forceMenuRefresh: function() {
+                const event = new CustomEvent('theme-menu-refresh', {
+                    detail: { timestamp: Date.now() }
+                });
+                document.dispatchEvent(event);
+                
+                document.getElementById('refresh-status').className = 'status status-success';
+                document.getElementById('refresh-status').textContent = '菜单状态: 已刷新 (' + new Date().toLocaleTimeString() + ')';
+                
+                setTimeout(() => {
+                    document.getElementById('refresh-status').className = 'status status-info';
+                    document.getElementById('refresh-status').textContent = '菜单状态: 正常';
+                }, 3000);
+            },
+            
+            updateStatus: function() {
+                const config = this.getThemeConfig();
+                const bodyClasses = document.body.className;
+                
+                document.getElementById('theme-status').textContent = `当前主题: ${config.name}`;
+                document.getElementById('theme-status').className = 'status status-success';
+                
+                this.updateColumnStatus();
+                this.updateComprehensiveStatus();
+            },
+            
+            updateColumnStatus: function() {
+                const bodyClasses = document.body.className;
+                const hasColumnMode = bodyClasses.includes('blue-white-column-mode');
+                
+                document.getElementById('column-status').textContent = `分栏模式: ${hasColumnMode ? '已启用' : '未启用'}`;
+                document.getElementById('column-status').className = hasColumnMode ? 'status status-success' : 'status status-info';
+                
+                // 更新预览
+                document.getElementById('preview-normal').style.display = hasColumnMode ? 'none' : 'block';
+                document.getElementById('preview-column').style.display = hasColumnMode ? 'block' : 'none';
+            },
+            
+            updateComprehensiveStatus: function() {
+                const config = this.getThemeConfig();
+                const bodyClasses = document.body.className;
+                const hasColumnMode = bodyClasses.includes('blue-white-column-mode');
+                
+                const status = {
+                    theme: config.name,
+                    columnMode: hasColumnMode,
+                    layout: config.layout || 'vertical',
+                    header: config.header || 'fixed',
+                    tabsBar: config.tabsBar || 'true',
+                    timestamp: new Date().toLocaleString(),
+                    bodyClasses: bodyClasses,
+                    localStorage: !!localStorage.getItem('vue-admin-better-theme')
+                };
+                
+                document.getElementById('comprehensive-status').textContent = JSON.stringify(status, null, 2);
+            }
+        };
+
+        // 主题切换函数
+        function switchToBlueWhite() {
+            themeUtils.switchTheme('blue-white');
+            showNotification('已切换到蓝白主题', 'success');
+        }
+
+        function switchToDefault() {
+            themeUtils.switchTheme('default');
+            showNotification('已切换到默认主题', 'success');
+        }
+
+        function switchToGreen() {
+            themeUtils.switchTheme('green');
+            showNotification('已切换到绿荫草场主题', 'success');
+        }
+
+        function switchToGlory() {
+            themeUtils.switchTheme('glory');
+            showNotification('已切换到荣耀典藏主题', 'success');
+        }
+
+        // 分栏模式函数
+        function enableColumnMode() {
+            if (themeUtils.isBlueWhiteTheme()) {
+                themeUtils.handleBlueWhiteColumnMode(true);
+                showNotification('蓝白主题分栏模式已启用', 'success');
+            } else {
+                showNotification('请先切换到蓝白主题', 'warning');
+            }
+        }
+
+        function disableColumnMode() {
+            themeUtils.handleBlueWhiteColumnMode(false);
+            showNotification('分栏模式已禁用', 'info');
+        }
+
+        function toggleColumnMode() {
+            if (themeUtils.isBlueWhiteTheme()) {
+                const bodyClasses = document.body.className;
+                const hasColumnMode = bodyClasses.includes('blue-white-column-mode');
+                themeUtils.handleBlueWhiteColumnMode(!hasColumnMode);
+                showNotification(`分栏模式已${!hasColumnMode ? '启用' : '禁用'}`, 'success');
+            } else {
+                showNotification('请先切换到蓝白主题', 'warning');
+            }
+        }
+
+        // 配置管理函数
+        function saveThemeConfig() {
+            const config = themeUtils.getThemeConfig();
+            const success = themeUtils.saveThemeConfig(config);
+            showNotification(success ? '配置已保存' : '保存失败', success ? 'success' : 'error');
+        }
+
+        function loadThemeConfig() {
+            const config = themeUtils.getThemeConfig();
+            themeUtils.applyTheme(config.name);
+            showNotification('配置已加载', 'success');
+        }
+
+        function clearThemeConfig() {
+            localStorage.removeItem('vue-admin-better-theme');
+            themeUtils.applyTheme('default');
+            showNotification('配置已清除', 'info');
+        }
+
+        function showCurrentConfig() {
+            const config = themeUtils.getThemeConfig();
+            const configDisplay = document.getElementById('config-display');
+            configDisplay.textContent = JSON.stringify(config, null, 2);
+            configDisplay.style.display = configDisplay.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 刷新函数
+        function forceMenuRefresh() {
+            themeUtils.forceMenuRefresh();
+        }
+
+        function simulateMenuUpdate() {
+            showNotification('正在模拟菜单更新...', 'info');
+            setTimeout(() => {
+                themeUtils.forceMenuRefresh();
+                showNotification('菜单更新完成', 'success');
+            }, 1000);
+        }
+
+        // 通知函数
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `status status-${type}`;
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.minWidth = '200px';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            themeUtils.updateStatus();
+            
+            // 监听主题菜单刷新事件
+            document.addEventListener('theme-menu-refresh', function(event) {
+                console.log('收到菜单刷新事件:', event.detail);
+            });
+            
+            showNotification('蓝白主题测试工具已就绪', 'success');
+        });
+
+        // 定期更新状态
+        setInterval(() => {
+            themeUtils.updateComprehensiveStatus();
+        }, 5000);
+    </script>
+</body>
+</html>
