@@ -1,0 +1,76 @@
+.vue-admin-better-theme-blue-white {
+  // Main colors
+  --vab-primary-color: #165DFF;
+  --vab-primary-color-light: #E8F3FF;
+  --vab-background-color: #FFFFFF;
+
+  // Text colors
+  --vab-text-color: #303133;
+  --vab-text-color-secondary: #606266;
+  --vab-text-color-light: #909399;
+
+  // Border colors
+  --vab-border-color: #DCDFE6;
+  --vab-border-color-light: #E4E7ED;
+  --vab-border-color-lighter: #EBEEF5;
+
+  // Component styles
+  .el-button--primary {
+    background-color: var(--vab-primary-color);
+    border-color: var(--vab-primary-color);
+    &:hover {
+      background-color: #4080FF;
+      border-color: #4080FF;
+    }
+    &:active {
+      background-color: #0958D9;
+      border-color: #0958D9;
+    }
+  }
+
+  .el-menu {
+    background-color: var(--vab-background-color);
+    border-right: 1px solid var(--vab-border-color-light);
+
+    .el-menu-item {
+      color: var(--vab-text-color);
+      &:hover {
+        background-color: var(--vab-primary-color-light);
+        color: var(--vab-primary-color);
+      }
+      &.is-active {
+        background-color: var(--vab-primary-color-light);
+        color: var(--vab-primary-color);
+      }
+    }
+
+    .el-submenu {
+      .el-submenu__title {
+        color: var(--vab-text-color);
+        &:hover {
+          background-color: var(--vab-primary-color-light);
+          color: var(--vab-primary-color);
+        }
+      }
+
+      .el-submenu__icon-arrow {
+        color: var(--vab-text-color-light);
+      }
+    }
+  }
+
+  .el-tabs {
+    .el-tabs__item {
+      color: var(--vab-text-color-secondary);
+      &.is-active {
+        color: var(--vab-primary-color);
+      }
+    }
+
+    .el-tabs__active-bar {
+      background-color: var(--vab-primary-color);
+    }
+  }
+
+  // Other component styles...
+}

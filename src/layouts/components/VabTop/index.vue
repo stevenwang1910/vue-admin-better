@@ -6,11 +6,16 @@
           <vab-logo />
         </el-col>
         <el-col :lg="12" :md="12" :sm="12" :xl="12" :xs="12">
-          <el-menu
-            active-text-color=" hsla(0, 0%, 100%, 0.95)"
-            background-color="#191a23"
+          <div v-if="columnMenu" class="horizontal-column-menu" :style="{ gridTemplateColumns: `repeat(${columnCount}, 1fr)` }">
+            <div v-for="route in routes" :key="route.path" class="column-menu-item">
+              <vab-side-item :full-path="route.path" :item="route" />
+            </div>
+          </div>
+          <el-menu v-else
+            active-text-color="var(--vab-primary-color)"
+            background-color="var(--vab-background-color)"
             :default-active="activeMenu"
-            text-color=" hsla(0, 0%, 100%, 0.95)"
+            text-color="var(--vab-text-color)"
             menu-trigger="hover"
             mode="horizontal"
           >
@@ -48,10 +53,12 @@
       }
     },
     computed: {
-      ...mapGetters({
-        routes: 'routes/routes',
-        visitedRoutes: 'tabsBar/visitedRoutes',
-      }),
+    ...mapGetters({
+      routes: 'routes/routes',
+      visitedRoutes: 'tabsBar/visitedRoutes',
+      columnMenu: 'settings/columnMenu',
+      columnCount: 'settings/columnCount',
+    }),
       activeMenu() {
         const route = this.$route
         const { meta, path } = route
@@ -86,6 +93,34 @@
     justify-items: flex-end;
     height: $base-top-bar-height;
     background: $base-menu-background;
+
+    .horizontal-column-menu {
+      display: grid;
+      gap: 10px;
+      padding: 0 10px;
+      
+      .column-menu-item {
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        
+        &:hover {
+          background-color: var(--vab-primary-color-light);
+        }
+        
+        .el-menu-item {
+          color: var(--vab-text-color);
+          padding: 0;
+          height: auto;
+          line-height: normal;
+          
+          &.is-active {
+            color: var(--vab-primary-color);
+          }
+        }
+      }
+    }
 
     .vab-main {
       background: $base-menu-background;

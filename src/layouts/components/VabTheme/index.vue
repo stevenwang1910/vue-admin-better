@@ -53,20 +53,35 @@
                   <span class="theme-name">绿荫草场</span>
                 </div>
                 <div
-                  class="theme-option"
-                  :class="{ active: theme.name === 'glory' }"
-                  @click="
-                    theme.name = 'glory'
-                    handleSaveTheme()
-                  "
-                >
-                  <div class="theme-preview glory-theme">
-                    <div class="preview-header"></div>
-                    <div class="preview-sidebar"></div>
-                    <div class="preview-content"></div>
-                  </div>
-                  <span class="theme-name">荣耀典藏</span>
-                </div>
+            class="theme-option"
+            :class="{ active: theme.name === 'glory' }"
+            @click="
+              theme.name = 'glory'
+              handleSaveTheme()
+            "
+          >
+            <div class="theme-preview glory-theme">
+              <div class="preview-header"></div>
+              <div class="preview-sidebar"></div>
+              <div class="preview-content"></div>
+            </div>
+            <span class="theme-name">荣耀典藏</span>
+          </div>
+          <div
+            class="theme-option"
+            :class="{ active: theme.name === 'blue-white' }"
+            @click="
+              theme.name = 'blue-white'
+              handleSaveTheme()
+            "
+          >
+            <div class="theme-preview blue-white-theme">
+              <div class="preview-header"></div>
+              <div class="preview-sidebar"></div>
+              <div class="preview-content"></div>
+            </div>
+            <span class="theme-name">蓝白模式</span>
+          </div>
               </div>
             </div>
 
@@ -131,6 +146,24 @@
                   </div>
                   <el-switch v-model="theme.tabsBar" active-value="true" inactive-value="false" @change="handleSaveTheme" />
                 </div>
+                <div class="feature-item">
+                  <div class="feature-info">
+                    <span class="feature-name">分栏菜单</span>
+                    <span class="feature-desc">开启分栏菜单功能</span>
+                  </div>
+                  <el-switch v-model="theme.columnMenu" active-value="true" inactive-value="false" @change="handleSaveTheme" />
+                </div>
+                <div class="feature-item">
+                  <div class="feature-info">
+                    <span class="feature-name">分栏数量</span>
+                    <span class="feature-desc">设置分栏菜单的列数</span>
+                  </div>
+                  <el-select v-model="theme.columnCount" placeholder="请选择" style="width: 120px" @change="handleSaveTheme">
+                    <el-option label="2列" value="2" />
+                    <el-option label="3列" value="3" />
+                    <el-option label="4列" value="4" />
+                  </el-select>
+                </div>
               </div>
             </div>
           </div>
@@ -140,6 +173,7 @@
       <div class="el-drawer__footer">
         <el-button type="primary" @click="handleSaveTheme">保存设置</el-button>
         <el-button @click="drawerVisible = false">取消</el-button>
+      </div>
       </div>
     </el-drawer>
   </span>
@@ -203,19 +237,23 @@
         this.drawerVisible = true
       },
       handleSaveTheme() {
-        let { name, layout, header, tabsBar } = this.theme
+        let { name, layout, header, tabsBar, columnMenu, columnCount } = this.theme
         localStorage.setItem(
           'vue-admin-better-theme',
           `{
             "name":"${name}",
             "layout":"${layout}",
             "header":"${header}",
-            "tabsBar":"${tabsBar}"
+            "tabsBar":"${tabsBar}",
+            "columnMenu":"${columnMenu}",
+            "columnCount":"${columnCount}"
           }`
         )
         if (!this.handleIsMobile()) this.changeLayout(layout)
         this.changeHeader(header)
         this.changeTabsBar(tabsBar)
+        this.setColumnMenu(columnMenu)
+        this.setColumnCount(columnCount)
         document.getElementsByTagName('body')[0].className = `vue-admin-better-theme-${name}`
         this.drawerVisible = false
       },
@@ -431,6 +469,17 @@
               }
               .preview-content {
                 background: #fff8e1;
+              }
+            }
+            &.blue-white-theme {
+              .preview-header {
+                background: #165DFF;
+              }
+              .preview-sidebar {
+                background: #FFFFFF;
+              }
+              .preview-content {
+                background: #FFFFFF;
               }
             }
           }

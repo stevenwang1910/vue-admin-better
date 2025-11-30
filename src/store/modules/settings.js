@@ -15,6 +15,8 @@ const state = () => ({
   header: theme.header || header,
   device: 'desktop',
   themeBar,
+  columnMenu: false,
+  columnCount: 2,
 })
 const getters = {
   collapse: (state) => state.collapse,
@@ -24,6 +26,8 @@ const getters = {
   logo: (state) => state.logo,
   tabsBar: (state) => state.tabsBar,
   themeBar: (state) => state.themeBar,
+  columnMenu: (state) => state.columnMenu,
+  columnCount: (state) => state.columnCount,
 }
 const mutations = {
   changeLayout: (state, layout) => {
@@ -47,6 +51,12 @@ const mutations = {
   toggleDevice: (state, device) => {
     state.device = device
   },
+  setColumnMenu: (state, columnMenu) => {
+    state.columnMenu = columnMenu
+  },
+  setColumnCount: (state, columnCount) => {
+    state.columnCount = columnCount
+  },
 }
 const actions = {
   changeLayout({ commit }, layout) {
@@ -69,6 +79,12 @@ const actions = {
   },
   toggleDevice({ commit }, device) {
     commit('toggleDevice', device)
+  },
+  setColumnMenu({ commit }, columnMenu) {
+    commit('setColumnMenu', columnMenu)
+  },
+  setColumnCount({ commit }, columnCount) {
+    commit('setColumnCount', columnCount)
   },
 }
 export default { state, getters, mutations, actions }
