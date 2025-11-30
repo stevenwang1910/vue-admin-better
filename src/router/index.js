@@ -290,6 +290,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: 'noRedirect',
     name: 'Mall',
+    alwaysShow: true,
     meta: {
       title: '商城',
       icon: 'shopping-cart',
@@ -304,8 +305,8 @@ export const asyncRoutes = [
         meta: {
           title: '支付',
           noKeepAlive: true,
+          permissions: ['admin'],
         },
-        children: null,
       },
       {
         path: 'goodsList',
@@ -313,6 +314,16 @@ export const asyncRoutes = [
         component: () => import('@/views/mall/goodsList/index'),
         meta: {
           title: '商品列表',
+          permissions: ['admin'],
+        },
+      },
+      {
+        path: 'activityManagement',
+        name: 'ActivityManagement',
+        component: () => import('@/views/activityManagement/index'),
+        meta: {
+          title: '活动管理',
+          permissions: ['admin'],
         },
       },
     ],
