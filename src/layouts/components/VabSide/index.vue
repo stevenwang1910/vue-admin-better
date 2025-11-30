@@ -1,14 +1,20 @@
 <template>
-  <el-scrollbar :class="{ 'is-collapse': collapse }" class="side-container">
+  <el-scrollbar :class="{ 'is-collapse': collapse, 'column-menu': columnMenu }" class="side-container">
     <vab-logo />
+    <div v-if="columnMenu" class="column-menu-container" :style="{ gridTemplateColumns: `repeat(${columnCount}, 1fr)` }">
+      <div v-for="route in routes" :key="route.path" class="column-menu-item">
+        <vab-side-item :full-path="route.path" :item="route" />
+      </div>
+    </div>
     <el-menu
-      active-text-color=" hsla(0, 0%, 100%, 0.95)"
-      background-color="#191a23"
+      v-else
+      active-text-color="var(--vab-primary-color)"
+      background-color="var(--vab-background-color)"
       :collapse="collapse"
       :collapse-transition="false"
       :default-active="activeMenu"
       :default-openeds="defaultOpens"
-      text-color=" hsla(0, 0%, 100%, 0.95)"
+      text-color="var(--vab-text-color)"
       :unique-opened="uniqueOpened"
       mode="vertical"
     >
@@ -34,6 +40,8 @@
       ...mapGetters({
         collapse: 'settings/collapse',
         routes: 'routes/routes',
+        columnMenu: 'settings/columnMenu',
+        columnCount: 'settings/columnCount',
       }),
       defaultOpens() {
         if (this.collapse) {
@@ -68,6 +76,35 @@
   }
 
   .side-container {
+    &.column-menu {
+      ::v-deep {
+        .el-scrollbar__wrap {
+          padding: 10px;
+        }
+      }
+    }
+
+    .column-menu-container {
+      display: grid;
+      gap: 10px;
+      padding: 10px;
+
+      .column-menu-item {
+        padding: 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        &.is-active {
+          background-color: var(--vab-primary-color);
+          color: white;
+        }
+      }
+    }
     position: fixed;
     top: 0;
     bottom: 0;

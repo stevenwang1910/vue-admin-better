@@ -10,5 +10,9 @@ const theme = {
   themeBar: true,
   //是否显示多标签页
   tabsBar: true,
+  //是否开启分栏菜单
+  columnMenu: false,
+  //分栏数量
+  columnCount: 2,
 }
 module.exports = theme
