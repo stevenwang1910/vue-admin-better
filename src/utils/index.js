@@ -90,7 +90,17 @@ export function paramObj(url) {
   if (!search) {
     return {}
   }
-  return JSON.parse(`{"${decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"').replace(/\+/g, ' ')}"}`)
+  // 处理特殊字符和空值情况
+  const params = search.split('&').reduce((acc, item) => {
+    const [key, value] = item.split('=')
+    if (key) {
+      const decodedKey = decodeURIComponent(key)
+      const decodedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : ''
+      acc[decodedKey] = decodedValue
+    }
+    return acc
+  }, {})
+  return params
 }
 
 /**

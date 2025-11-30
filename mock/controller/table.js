@@ -1,5 +1,5 @@
 const { mock } = require('mockjs')
-const { handleRandomImage } = require('../utils')
+const { handleRandomImage } = require('../utils/index.js')
 
 const List = []
 const count = 999
