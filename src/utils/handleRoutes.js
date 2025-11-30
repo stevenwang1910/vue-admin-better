@@ -95,6 +95,10 @@ export function filterAsyncRoutes(routes, permissions) {
     if (hasPermission(permissions, item)) {
       if (item.children && Array.isArray(item.children)) {
         item.children = filterAsyncRoutes(item.children, permissions)
+        // 如果子路由为空，删除children属性
+        if (!item.children || item.children.length === 0) {
+          delete item.children
+        }
       }
       finallyRoutes.push(item)
     }
