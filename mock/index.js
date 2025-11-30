@@ -18,7 +18,11 @@ const registerRoutes = (app) => {
   const mockArray = handleMockArray()
   mockArray.forEach((item) => {
     const obj = require(item)
-    mocks.push(...obj)
+    if (Array.isArray(obj)) {
+      mocks.push(...obj)
+    } else {
+      mocks.push(obj)
+    }
   })
   const mocksForServer = mocks.map((route) => {
     return responseFake(route.url, route.type, route.response)

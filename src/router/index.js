@@ -122,6 +122,15 @@ export const asyncRoutes = [
           permissions: ['admin'],
         },
       },
+      {
+        path: 'newTable',
+        component: () => import('@/views/vab/newTable/index'),
+        name: 'NewTable',
+        meta: {
+          title: '新表格',
+          permissions: ['admin'],
+        },
+      },
 
       {
         path: 'webSocket',
